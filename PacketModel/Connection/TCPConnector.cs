@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PacketModel
+namespace PacketModel.Connection
 {
-    public class Class1
+    class TCPConnector
     {
     }
 }
