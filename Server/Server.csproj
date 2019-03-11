@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Exams\Dummy Test.csv" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PacketModel\PacketModel.csproj">
@@ -57,8 +58,6 @@
       <Name>PacketModel</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Exams\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
