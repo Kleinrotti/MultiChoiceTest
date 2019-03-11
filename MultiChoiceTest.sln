@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{A25BF396-DD57-43DE-B9D6-6F366A0A9E9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "..\Server\Server\Server.csproj", "{10ED65C4-3C83-4FC8-817B-07FA93F10571}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{10ED65C4-3C83-4FC8-817B-07FA93F10571}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketModel", "..\PacketModel\PacketModel\PacketModel.csproj", "{D1D3423C-199B-471D-9117-AC5F6191E4AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketModel", "PacketModel\PacketModel.csproj", "{D1D3423C-199B-471D-9117-AC5F6191E4AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
