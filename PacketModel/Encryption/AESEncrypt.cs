@@ -4,12 +4,12 @@ using System.Security.Cryptography;
 
 namespace PacketModel.Encryption
 {
-    public static class AESEncrypt
+    internal static class AESEncrypt
     {
         //UNSECURE!!!
-        public static byte[] Tempkey = { 0x01, 0x02, 0x01, 0x08, 0x05, 0x23, 0x12 };
+        public static byte[] Tempkey = Convert.FromBase64String("AAECAwQFBgcICQoLDA0ODw==");
 
-        public static byte[] TempIV = { 0x02, 0x22, 0x34, 0x78 };
+        public static byte[] TempIV = Convert.FromBase64String("LKECAwgfBgcICdoLpA0ODw==");
 
         /// <summary>
         /// Encrypt specified stream.

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using PacketModel.Connection.EventArguments;
+using PacketModel.Translator;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using PacketModel.Connection.EventArgs;
 
 namespace Client.Connection
 {
@@ -12,18 +12,16 @@ namespace Client.Connection
         #region Delegates
 
         public delegate void PacketReceivedEventHandler(object sender, PacketReceivedEventArgs e);
-        public delegate void ConnectedEventHandler(object sender, ClientConnectionChangedEventArgs e);
-        public delegate void DisconnectedEventHandler(object sender, EventArgs e);
-        public delegate void ConnectionFailedEventHandler(object sender, EventArgs e);
+
+        public delegate void ConnectionChangedEventHandler(object sender, ClientConnectionChangedEventArgs e);
 
         #endregion Delegates
 
         #region Events
 
         public event PacketReceivedEventHandler PacketReceived;
-        public event ConnectedEventHandler Connected;
-        public event DisconnectedEventHandler Disconnected;
-        public event ConnectionFailedEventHandler ConnectionFailed;
+
+        public event ConnectionChangedEventHandler Connection;
 
         #endregion Events
 
@@ -34,19 +32,9 @@ namespace Client.Connection
             PacketReceived?.Invoke(this, e);
         }
 
-        protected void OnConnected(ClientConnectionChangedEventArgs e)
+        protected void OnConnectionChanged(ClientConnectionChangedEventArgs e)
         {
-            Connected?.Invoke(this, e);
-        }
-
-        protected void OnDisconnected(EventArgs e)
-        {
-            Disconnected?.Invoke(this, e);
-        }
-
-        protected void OnConnectionFailed(EventArgs e)
-        {
-            ConnectionFailed?.Invoke(this, e);
+            Connection?.Invoke(this, e);
         }
 
         #endregion Event Raiser
@@ -70,27 +58,38 @@ namespace Client.Connection
         /// <summary>
         /// gibt zurück, ob der Socket des Clients mit einem Host verbunden ist
         /// </summary>
-        public bool IsConnected {
+        public bool IsConnected
+        {
             get { return tcpClient.Connected; }
         }
 
-        public string IPAdrStr {
-            get {
-                if(tcpClient.Connected){
+        public string IPAdrStr
+        {
+            get
+            {
+                if (tcpClient.Connected)
+                {
                     string[] part = tcpClient.Client.LocalEndPoint.ToString().Split(':');
                     return part[0];
-                }else{
+                }
+                else
+                {
                     return string.Empty;
                 }
             }
         }
 
-        public string PortStr {
-            get {
-                if(tcpClient.Connected){
+        public string PortStr
+        {
+            get
+            {
+                if (tcpClient.Connected)
+                {
                     string[] part = tcpClient.Client.LocalEndPoint.ToString().Split(':');
                     return part[1];
-                }else{
+                }
+                else
+                {
                     return string.Empty;
                 }
             }
@@ -117,14 +116,16 @@ namespace Client.Connection
         public void Connect(IPAddress localaddr, int port)
         {
             // Wenn der Client verbunden ist, kein erneuter Verbindungsversuch.
-            if(tcpClient.Connected)
+            if (tcpClient.Connected)
                 return;
 
-            try{
+            try
+            {
                 // Beginnt einen Asynchronen Verbindungsversuch in einem neuen Thread.
                 this.tcpClient.BeginConnect(localaddr, port, ConnectCallback, null);
-
-            }catch(Exception ex){
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Fehler beim Verbinden zum Server.", ex);
             }
         }
@@ -136,51 +137,46 @@ namespace Client.Connection
         public void Disconnect()
         {
             // Wenn der Client nicht verbunden ist kann nichts getrennt werden.
-            if(!tcpClient.Connected)
+            if (!tcpClient.Connected)
                 return;
 
-            try{
+            try
+            {
                 //tcpClient.ReceiveTimeout = 10;
                 //tcpClient.SendTimeout = 10;
                 // Schließt die Verbindung zum Server (Synchron, kein neuer Thread).
                 tcpClient.Close();
                 //Thread.Sleep(100);
                 //Application.DoEvents();
-                OnDisconnected(EventArgs.Empty);
-
-            }catch(Exception ex){
+                OnConnectionChanged(new ClientConnectionChangedEventArgs(false));
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Fehler beim Schließen der Verbindung zum Server.", ex);
             }
         }
 
         /// <summary>
-        /// Sendet ein Paket (Byte-Array) an den Server.
+        /// Sendet ein object an den Server.
         /// </summary>
         /// <param name="bytes"></param>
-        public void SendPacket(byte[] bytes)
+        public void SendPacket(object data)
         {
             // Wenn der Client nicht verbunden ist kann nichts gesendet werden.
-            if(!tcpClient.Connected)
+            if (!tcpClient.Connected)
                 return;
 
-            try{
+            try
+            {
                 // Stream holen und Asynchron das Paket in den Stream schreiben (neuer Thread).
                 NetworkStream networkStream = tcpClient.GetStream();
-                networkStream.BeginWrite(bytes, 0, bytes.Length, SendCallback, null);
-
-            }catch(Exception ex){
+                var d = PacketSerializer.Serialize(data);
+                networkStream.BeginWrite(d, 0, d.Length, SendCallback, null);
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Fehler beim Senden des Paketes.", ex);
             }
-        }
-
-        /// <summary>
-        /// Sendet ein String als Byte-Paket an den Server.
-        /// </summary>
-        /// <param name="bytes"></param>
-        public void SendPacket(string strData)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(strData);
-            SendPacket(bytes);
         }
 
         #region Public Callbacks
@@ -191,19 +187,22 @@ namespace Client.Connection
         /// <param name="result"></param>
         private void ConnectCallback(IAsyncResult result)
         {
-            try{
+            try
+            {
                 // Beendet den Verbindungsversuch und schreibt benötigte Rückgabewerte in result.
                 this.tcpClient.EndConnect(result);
                 // Führt das Event Connected aus.
-                OnConnected(new ClientConnectionChangedEventArgs(tcpClient));
+                OnConnectionChanged(new ClientConnectionChangedEventArgs(tcpClient));
                 // Holt den Stream und beginnt einen asynchronen Lesezyklus (neuer Thread).
                 NetworkStream networkStream = tcpClient.GetStream();
                 networkStream.BeginRead(this.buffer, 0, buffer.Length, ReadCallback, null);
-
-            }catch(SocketException){
-                OnConnectionFailed(EventArgs.Empty);
-
-            }catch(Exception ex){
+            }
+            catch (SocketException)
+            {
+                OnConnectionChanged(new ClientConnectionChangedEventArgs(tcpClient));
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Fehler beim Verbinden zum Server.", ex);
             }
         }
@@ -214,12 +213,14 @@ namespace Client.Connection
         /// <param name="result"></param>
         private void SendCallback(IAsyncResult result)
         {
-            try{
+            try
+            {
                 // Holt den Stream und beendet den asynchronen Sendevorgang (Nachricht wurde gesendet).
                 NetworkStream networkStream = tcpClient.GetStream();
                 networkStream.EndWrite(result);
-
-            }catch(Exception ex){
+            }
+            catch (Exception ex)
+            {
                 throw new Exception("Fehler beim Senden des Paketes.", ex);
             }
         }
@@ -230,7 +231,8 @@ namespace Client.Connection
         /// <param name="result"></param>
         private void ReadCallback(IAsyncResult result)
         {
-            try{
+            try
+            {
                 // Holt den Stream und beendet den asynchronen Lesevorgang (Nachricht empfangen).
                 // Anzahl der empfangenen Bytes wird in read geschrieben.
                 NetworkStream networkStream = tcpClient.GetStream();
@@ -244,11 +246,12 @@ namespace Client.Connection
                 OnPacketReceived(new PacketReceivedEventArgs(null, actualBytes, read));
                 // Neuen Lesevorgang starten.
                 networkStream.BeginRead(buffer, 0, buffer.Length, ReadCallback, null);
-
-            }catch(IOException){
-                OnDisconnected(EventArgs.Empty);
-
-            }catch //(Exception ex)
+            }
+            catch (IOException)
+            {
+                OnConnectionChanged(new ClientConnectionChangedEventArgs(tcpClient));
+            }
+            catch //(Exception ex)
             {
                 //throw new Exception("Fehler beim Empfangen eines Paketes.", ex);
             }

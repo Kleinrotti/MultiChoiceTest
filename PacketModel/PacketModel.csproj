@@ -41,11 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection\EventArgs\ClientConnectionChangedEventArgs.cs" />
-    <Compile Include="Connection\EventArgs\PacketReceivedEventArgs.cs" />
+    <Compile Include="Connection\EventArguments\ClientConnectionChangedEventArgs.cs" />
+    <Compile Include="Connection\EventArguments\PacketReceivedEventArgs.cs" />
     <Compile Include="Connection\PacketHandler.cs" />
     <Compile Include="Encryption\AESEncrypt.cs" />
     <Compile Include="Enums\ConnectionState.cs" />
+    <Compile Include="Models\DefaultAnswer.cs" />
+    <Compile Include="Models\DefaultConnectionInfo.cs" />
     <Compile Include="Models\DefaultExercise.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Translator\PacketSerializer.cs" />

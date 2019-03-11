@@ -1,9 +1,9 @@
-﻿using PacketModel.Connection.EventArgs;
+﻿using PacketModel.Connection.EventArguments;
+using PacketModel.Translator;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Server.Connection
 {
@@ -13,9 +13,7 @@ namespace Server.Connection
 
         public delegate void PacketReceivedEventHandler(object sender, PacketReceivedEventArgs e);
 
-        public delegate void ClientConnectedEventHandler(object sender, ClientConnectionChangedEventArgs e);
-
-        public delegate void ClientDisconnectedEventHandler(object sender, ClientConnectionChangedEventArgs e);
+        public delegate void ClientConnectionChangedEventHandler(object sender, ClientConnectionChangedEventArgs e);
 
         #endregion Delegates
 
@@ -23,9 +21,7 @@ namespace Server.Connection
 
         public event PacketReceivedEventHandler PacketReceived;
 
-        public event ClientConnectedEventHandler ClientConnected;
-
-        public event ClientDisconnectedEventHandler ClientDisconnected;
+        public event ClientConnectionChangedEventHandler ClientConnectionChanged;
 
         #endregion Events
 
@@ -36,14 +32,9 @@ namespace Server.Connection
             PacketReceived?.Invoke(this, e);
         }
 
-        private void OnClientConnected(ClientConnectionChangedEventArgs e)
+        private void OnClientConnectionChanged(ClientConnectionChangedEventArgs e)
         {
-            ClientConnected?.Invoke(this, e);
-        }
-
-        private void OnClientDisconnected(ClientConnectionChangedEventArgs e)
-        {
-            ClientDisconnected?.Invoke(this, e);
+            ClientConnectionChanged?.Invoke(this, e);
         }
 
         #endregion Event Raiser
@@ -157,27 +148,27 @@ namespace Server.Connection
         }
 
         /// <summary>
-        /// Sendet ein Paket an alle Clienten.
+        /// Sendet ein object an alle Clienten
         /// </summary>
         /// <param name="bytes"></param>
-        public void SendPacket(byte[] bytes)
+        public void SendPacket(object data)
         {
             // Sendet das Paket an jeden Clienten.
-            foreach (Client client in clients)
+            foreach (Client c in clients)
             {
-                SendPacket(client.Tcpclient, bytes);
+                SendPacket(c.Tcpclient, PacketSerializer.Serialize(data));
             }
         }
 
         /// <summary>
-        /// Sendet einen String als Byte-Paket an alle Clienten.
+        /// Sendet ein Object
         /// </summary>
         /// <param name="tcpClient"></param>
         /// <param name="bytes"></param>
-        public void SendPacket(string strData)
+        public void SendPacket(TcpClient client, object data)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(strData);
-            SendPacket(bytes);
+            byte[] bytes = PacketSerializer.Serialize(data);
+            SendPacket(client, bytes);
         }
 
         /// <summary>
@@ -185,7 +176,7 @@ namespace Server.Connection
         /// </summary>
         /// <param name="tcpClient"></param>
         /// <param name="bytes"></param>
-        public void SendPacket(TcpClient tcpClient, byte[] bytes)
+        private void SendPacket(TcpClient tcpClient, byte[] encrypteddata)
         {
             try
             {
@@ -195,7 +186,7 @@ namespace Server.Connection
                     // Es wird "sendCallback" mit dem Client, an den gesendet werden soll,
                     // als Parameter "result" uebergeben.
                     NetworkStream networkStream = tcpClient.GetStream();
-                    networkStream.BeginWrite(bytes, 0, bytes.Length, sendCallback, tcpClient);
+                    networkStream.BeginWrite(encrypteddata, 0, encrypteddata.Length, sendCallback, tcpClient);
                 }
                 else
                 {
@@ -206,24 +197,13 @@ namespace Server.Connection
                     {
                         clients.Remove(client);
                     }
-                    OnClientDisconnected(new ClientConnectionChangedEventArgs(client.Tcpclient));
+                    OnClientConnectionChanged(new ClientConnectionChangedEventArgs(client.Tcpclient));
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception("Fehler beim Senden des Paketes.", ex);
             }
-        }
-
-        /// <summary>
-        /// Sendet einen String als Byte-Paket an einen Clienten.
-        /// </summary>
-        /// <param name="tcpClient"></param>
-        /// <param name="bytes"></param>
-        public void SendPacket(TcpClient tcpClient, string strData)
-        {
-            byte[] bytes = Encoding.UTF8.GetBytes(strData);
-            SendPacket(tcpClient, bytes);
         }
 
         #region Callbacks
@@ -255,7 +235,7 @@ namespace Server.Connection
                     NetworkStream networkStream = client.Networkstream;
                     networkStream.BeginRead(client.Buffer, 0, client.Buffer.Length, readCallback, client);
                     // ClientConnected Event ausführen.
-                    OnClientConnected(new ClientConnectionChangedEventArgs(tcpClient));
+                    OnClientConnectionChanged(new ClientConnectionChangedEventArgs(tcpClient));
                     // Akzeptieren neuer Clienten starten.
                     tcpListener.BeginAcceptTcpClient(acceptTcpClientCallback, null);
                 }
@@ -311,7 +291,8 @@ namespace Server.Connection
                         {
                             this.clients.Remove(client);
                             // ClientDisconnected Event ausführen.
-                            OnClientDisconnected(new ClientConnectionChangedEventArgs(client.Tcpclient));
+                            OnClientConnectionChanged(new ClientConnectionChangedEventArgs(((IPEndPoint)client.Tcpclient.Client.RemoteEndPoint).Address, false));
+                            client.Tcpclient.Dispose();
                             return;
                         }
                     }
@@ -336,7 +317,7 @@ namespace Server.Connection
                     {
                         this.clients.Remove(client);
                     }
-                    OnClientDisconnected(new ClientConnectionChangedEventArgs(client.Tcpclient));
+                    OnClientConnectionChanged(new ClientConnectionChangedEventArgs(client.Tcpclient));
                 }
             }
             catch (Exception ex)
