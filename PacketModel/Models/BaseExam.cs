@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PacketModel.Models
+﻿namespace PacketModel.Models
 {
-    class BaseExam
+    public class BaseExam
     {
     }
 }
