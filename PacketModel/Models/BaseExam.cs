@@ -1,6 +1,6 @@
 ﻿namespace PacketModel.Models
 {
-    internal class BaseExam
+    public class BaseExam
     {
     }
 }

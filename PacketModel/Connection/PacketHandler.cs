@@ -1,6 +1,7 @@
 ﻿namespace PacketModel.Connection
 {
-    internal class PacketHandler
+    public class PacketHandler
     {
+        
     }
 }

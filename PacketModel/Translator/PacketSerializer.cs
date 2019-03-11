@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace PacketModel.Translator
 {
-    internal static class PacketSerializer
+    public static class PacketSerializer
     {
         public static byte[] Serialize(object anySerializableObject)
         {

@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace PacketModel.Encryption
 {
-    internal static class AESEncrypt
+    public static class AESEncrypt
     {
         //UNSECURE!!!
         public static byte[] Tempkey = { 0x01, 0x02, 0x01, 0x08, 0x05, 0x23, 0x12 };

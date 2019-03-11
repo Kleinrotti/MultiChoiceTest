@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace PacketModel.Connection.EventArgs
 {
-    internal class ClientConnectionChangedEventArgs : Exception
+    public class ClientConnectionChangedEventArgs : Exception
     {
         public TcpClient tcpClient { get; set; }
 

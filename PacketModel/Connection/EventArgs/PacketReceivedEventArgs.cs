@@ -3,7 +3,7 @@ using System.Net.Sockets;
 
 namespace PacketModel.Connection.EventArgs
 {
-    internal class PacketReceivedEventArgs : Exception
+    public class PacketReceivedEventArgs : Exception
     {
         public byte[] Packet { get; set; }
 
