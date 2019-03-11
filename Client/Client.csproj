@@ -46,15 +46,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Form1.cs">
+    <Compile Include="Connection\TCPClient.cs" />
+    <Compile Include="Forms\FormExamSelection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Forms\FormExamSelection.Designer.cs">
+      <DependentUpon>FormExamSelection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormMultipleChoiceTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormMultipleChoiceTest.Designer.cs">
+      <DependentUpon>FormMultipleChoiceTest.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ControlFillHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FormExamSelection.resx">
+      <DependentUpon>FormExamSelection.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormMultipleChoiceTest.resx">
+      <DependentUpon>FormMultipleChoiceTest.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
