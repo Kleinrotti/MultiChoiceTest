@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connection\EventArgs\ClientConnectionChangedEventArgs.cs" />
+    <Compile Include="Connection\EventArgs\PacketReceivedEventArgs.cs" />
     <Compile Include="Connection\PacketHandler.cs" />
     <Compile Include="Connection\TCPConnector.cs" />
     <Compile Include="Encryption\AESEncrypt.cs" />
