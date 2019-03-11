@@ -11,9 +11,16 @@ namespace PacketModel.Encryption
 
         public static byte[] TempIV = { 0x02, 0x22, 0x34, 0x78 };
 
+        /// <summary>
+        /// Encrypt specified stream.
+        /// </summary>
+        /// <param name="plain"></param>
+        /// <param name="Key"></param>
+        /// <param name="IV"></param>
+        /// <returns></returns>
         public static byte[] encryptStream(byte[] plain, byte[] Key, byte[] IV)
         {
-            byte[] encrypted; ;
+            byte[] encrypted;
             using (MemoryStream mstream = new MemoryStream())
             {
                 using (AesCryptoServiceProvider aesProvider = new AesCryptoServiceProvider())
@@ -29,6 +36,13 @@ namespace PacketModel.Encryption
             return encrypted;
         }
 
+        /// <summary>
+        /// Decrypt specified stream.
+        /// </summary>
+        /// <param name="encrypted"></param>
+        /// <param name="Key"></param>
+        /// <param name="IV"></param>
+        /// <returns></returns>
         public static byte[] decryptStream(byte[] encrypted, byte[] Key, byte[] IV)
         {
             byte[] plain;

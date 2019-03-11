@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using PacketModel.Connection.EventArgs;
 
 namespace Client.Connection
 {
@@ -218,7 +219,7 @@ namespace Client.Connection
                 NetworkStream networkStream = tcpClient.GetStream();
                 networkStream.EndWrite(result);
 
-            }catch(Exception ex{
+            }catch(Exception ex){
                 throw new Exception("Fehler beim Senden des Paketes.", ex);
             }
         }
@@ -247,7 +248,8 @@ namespace Client.Connection
             }catch(IOException){
                 OnDisconnected(EventArgs.Empty);
 
-            }catch //(Exception ex){
+            }catch //(Exception ex)
+            {
                 //throw new Exception("Fehler beim Empfangen eines Paketes.", ex);
             }
         }
