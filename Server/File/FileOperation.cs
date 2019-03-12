@@ -3,6 +3,7 @@ using Server.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Server.File
 {
@@ -37,6 +38,11 @@ namespace Server.File
                     l.AppendToLog(ex.Message, LogType.Exception);
                 }
             }
+        }
+
+        protected List<string> GetExamNames(string path)
+        {
+            return System.IO.Directory.GetFiles(path).Select(System.IO.Path.GetFileNameWithoutExtension).ToList<string>();
         }
 
         protected void WriteLineToFile(string path, string content)

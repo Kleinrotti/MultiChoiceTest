@@ -1,6 +1,7 @@
 ﻿using PacketModel.Connection.EventArguments;
 using PacketModel.Models;
 using System;
+using System.Net.Sockets;
 
 namespace PacketModel.Connection
 {
@@ -26,6 +27,22 @@ namespace PacketModel.Connection
             else if (type == typeof(DefaultExercise))
             {
             }
+            
+        }
+        public void ProcessPacket(object packet, Delegate d)
+        {
+            _packet = packet;
+            var type = _packet.GetType();
+            if (type == typeof(DefaultConnectionInfo))
+            {
+                var v = _packet as DefaultConnectionInfo;
+                Console.WriteLine("Nachricht: " + v.Message);
+                d.DynamicInvoke(null);
+            }
+            else if (type == typeof(DefaultExercise))
+            {
+            }
+
         }
 
         public void ProcessConnectionState(ClientConnectionChangedEventArgs e)

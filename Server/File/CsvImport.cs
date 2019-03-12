@@ -4,19 +4,31 @@ using System.Collections.Generic;
 
 namespace Server.File
 {
+    /// <summary>
+    /// Import Csv files to object list
+    /// </summary>
     internal sealed class CsvImport : FileOperation
     {
         private string _path;
         public List<DefaultExercise> Exercises { get; private set; }
 
+        /// <summary>
+        /// Path without filename
+        /// </summary>
+        /// <param name="path"></param>
         public CsvImport(string path)
         {
             _path = path;
         }
 
-        public List<DefaultExercise> GetExercises()
+        public List<string> GetExamNames()
         {
-            ReadLinesFromFile(_path);
+            return GetExamNames(_path);
+        }
+
+        public List<DefaultExercise> GetExercises(string filename)
+        {
+            ReadLinesFromFile(System.IO.Path.Combine(_path,filename));
             var v = new List<DefaultExercise>();
             foreach (string s in Lines)
             {
