@@ -5,7 +5,6 @@ using PacketModel.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Net;
 using System.Windows.Forms;
 
 namespace Client.Forms
@@ -15,16 +14,16 @@ namespace Client.Forms
         private TCPClient _client;
 
         private bool _connected = false;
-
-        private static IPAddress _ip = IPAddress.Parse("127.0.0.1");
-        private static int _port = 15000;
+        private List<DefaultExercise> _exercises;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormMultipleChoiceTest"/> class.
         /// </summary>
-        public FormMultipleChoiceTest()
+        public FormMultipleChoiceTest(TCPClient tcpclient, List<DefaultExercise> exercises)
         {
             InitializeComponent();
+            _client = tcpclient;
+            _exercises = exercises;
         }
 
         /// <summary>
@@ -34,11 +33,10 @@ namespace Client.Forms
         /// <param name="e"></param>
         private void FormMultipleChoiceTest_Load(object sender, EventArgs e)
         {
-            this.CreateClient();
+            //this.CreateClient();
             _connected = true;
 
             this.CreateTabForExercise(1, "Test Aufgabe.", new List<String> { "test", "tets2", "test", "tets2", "test", "tets2" });
-
         }
 
         /// <summary>
@@ -50,21 +48,23 @@ namespace Client.Forms
         private void CreateTabForExercise(Int32 id, String question, List<String> answers)
         {
             // Create a new TabPage
-            var newTabPage = new TabPage() {
+            var newTabPage = new TabPage()
+            {
                 Text = id.ToString(),
                 BackColor = Color.White
-
             };
 
             // Create a new Label for displaing the question.
-            var newLabel = new Label() {
+            var newLabel = new Label()
+            {
                 Text = question,
                 Location = new Point(17, 18),
                 Font = new Font("Arial", 14.25f, FontStyle.Bold)
             };
 
             // Create a new GroupBox
-            var newGroupBox = new GroupBox() {
+            var newGroupBox = new GroupBox()
+            {
                 Text = "Antwortmöglichkeiten",
                 Location = new Point(20, 109),
                 Size = new Size(820, 225),
@@ -74,9 +74,10 @@ namespace Client.Forms
             // Create RadioButtons for the answers
             int yLocation = 40;
             int xLocation = 30;
-            for(int i = 0; i < answers.Count; i++)
+            for (int i = 0; i < answers.Count; i++)
             {
-                var newAnswers = new RadioButton() {
+                var newAnswers = new RadioButton()
+                {
                     Text = answers[i],
                     Font = new Font("Arial", 12f, FontStyle.Regular),
                     Location = new Point(xLocation, yLocation)
@@ -87,7 +88,7 @@ namespace Client.Forms
                 newGroupBox.Controls.Add(newAnswers);
 
                 // Check for second column
-                if(i != 0 && i % 3 == 0)
+                if (i != 0 && i % 3 == 0)
                 {
                     yLocation = 40;
                     xLocation = 410;
@@ -100,8 +101,6 @@ namespace Client.Forms
 
             //Add the generated TabPage to the TabControl
             tabControlExam.TabPages.Add(newTabPage);
-
-
 
             //Create a new Button
             //var newButton = new Button() {
@@ -130,7 +129,7 @@ namespace Client.Forms
         private void OnPacketReceived(object sender, PacketReceivedEventArgs e)
         {
             PacketHandler h = new PacketHandler();
-            h.ProcessPacket(e,null);
+            h.ProcessPacket(e, null);
         }
 
         /// <summary>
@@ -147,29 +146,18 @@ namespace Client.Forms
         }
 
         /// <summary>
-        /// Create a new client
-        /// </summary>
-        private void CreateClient()
-        {
-            _client = new TCPClient();
-            _client.Connection += OnConnectionChanged;
-            _client.PacketReceived += OnPacketReceived;
-            _client.Connect(_ip, _port);
-        }
-
-        /// <summary>
         /// Send a test message
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
-            if (!_connected)
-                return;
+            //    if (!_connected)
+            //        return;
 
-            var v = new DefaultConnectionInfo();
-            v.Message = "Hallo du da";
-            _client.SendPacket(v);
+            //    var v = new DefaultConnectionInfo();
+            //    v.Message = "Hallo du da";
+            //    _client.SendPacket(v);
         }
     }
 }

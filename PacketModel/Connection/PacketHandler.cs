@@ -1,8 +1,9 @@
 ﻿using PacketModel.Connection.EventArguments;
+using PacketModel.Enums;
 using PacketModel.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Net.Sockets;
 
 namespace PacketModel.Connection
 {
@@ -21,45 +22,79 @@ namespace PacketModel.Connection
             Delegate[] del = response.GetInvocationList();
             _packet = e.Packet;
             var type = _packet.GetType();
-            //If server received defaultconnectioninfo from client
-            if (type == typeof(DefaultConnectionInfo))
+            try
             {
-                var v = _packet as DefaultConnectionInfo;
-                Console.WriteLine("Nachricht: " + v.Message);
-                if (v.IsExamSelectionFromClient)
+                if (IsList(_packet))
                 {
-                    del[1].DynamicInvoke(e.Sender,"");
+                    //If client received exercise list from server
+                    if (type == typeof(List<DefaultExercise>))
+                    {
+                        var v = _packet as List<DefaultExercise>;
+                        Console.WriteLine("Client received exercises");
+                        del[1].DynamicInvoke(v);
+                        return;
+                    }
                 }
-                del[0].DynamicInvoke(e.Sender,"");
-                
+                //Packet needs to be handled by client
+                if (((IPacket)_packet).Operator == HandlerOperator.Client)
+                {
+                    //If client received examnames list from server
+                    if (type == typeof(AvailibleExams))
+                    {
+                        var v = _packet as AvailibleExams;
+                        Console.WriteLine("Client received exam names " + v.ExamNames[0]);
+                        del[0].DynamicInvoke(v.ExamNames);
+                    }
+                }
+                else
+                {
+                    if (type == typeof(DefaultMessage))
+                    {
+                        var obj = _packet as DefaultMessage;
+                        switch (obj.ExecuteCommand)
+                        {
+                            case Command.SendExamList:
+                                del[0].DynamicInvoke(e.Sender, "");
+                                break;
+
+                            case Command.SendExercises:
+                                del[1].DynamicInvoke(e.Sender, obj.MessageString);
+                                break;
+
+                            default:
+                                Console.WriteLine("Message: " + ((DefaultMessage)_packet).MessageString);
+                                break;
+                        }
+                    }
+                    //Server will check the answers from client
+                    else if (type == typeof(List<DefaultAnswer>))
+                    {
+                        var v = _packet as List<DefaultAnswer>;
+                    }
+                }
             }
-            //If client received exercise list from server
-            else if (type == typeof(List<DefaultExercise>))
+            catch (Exception ex)
             {
-                var v = _packet as List<DefaultExercise>;
-                Console.WriteLine("Client received Exercises");
-            }
-            //If client received examnames list from server
-            else if(type == typeof(AvailibleExams))
-            {
-                var v = _packet as AvailibleExams;
-                Console.WriteLine("Client received exam names" + v.ExamNames[0]);
-            }
-            //If server received answers from client
-            else if(type == typeof(List<DefaultAnswer>))
-            {
-                var v = _packet as List<DefaultAnswer>;
+                Console.WriteLine(ex.Message);
             }
         }
 
-        public void ProcessConnectionState(ClientConnectionChangedEventArgs e)
+        private bool IsList(object o)
+        {
+            if (o == null) return false;
+            return o is IList &&
+                   o.GetType().IsGenericType &&
+                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
+        }
+
+        public string ProcessConnectionState(ClientConnectionChangedEventArgs e)
         {
             string info;
             if (e.IsConnected)
-                info = "Client: " + e.IP + " ist verbunden";
+                info = "Client: " + e.IP + " connected";
             else
-                info = "Client: " + e.IP + " ist nicht mehr verbunden";
-            Console.WriteLine(info);
+                info = "Client: " + e.IP + " disconnected";
+            return info;
         }
 
         private bool IsEmpty()

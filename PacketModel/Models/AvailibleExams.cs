@@ -1,18 +1,18 @@
-﻿using System;
+﻿using PacketModel.Enums;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PacketModel.Models
 {
     [Serializable]
-    public class AvailibleExams
+    public class AvailibleExams : IPacket
     {
         public List<string> ExamNames { get; set; }
+        public HandlerOperator Operator { get; set; }
 
-        public AvailibleExams(List<string> examnames)
+        public AvailibleExams(HandlerOperator op, List<string> examnames)
         {
+            Operator = op;
             ExamNames = examnames;
         }
     }

@@ -251,10 +251,6 @@ namespace Client.Connection
             {
                 OnConnectionChanged(new ClientConnectionChangedEventArgs(tcpClient));
             }
-            catch //(Exception ex)
-            {
-                //throw new Exception("Fehler beim Empfangen eines Paketes.", ex);
-            }
         }
 
         #endregion Public Callbacks

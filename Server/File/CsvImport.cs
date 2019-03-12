@@ -1,4 +1,5 @@
-﻿using PacketModel.Models;
+﻿using PacketModel.Enums;
+using PacketModel.Models;
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +32,7 @@ namespace Server.File
 
         public List<DefaultExercise> GetExercises(string filename)
         {
-            ReadLinesFromFile(System.IO.Path.Combine(_path,filename));
+            ReadLinesFromFile(System.IO.Path.Combine(_path, filename + ".csv"));
             var v = new List<DefaultExercise>();
             foreach (string s in Lines)
             {
@@ -42,7 +43,7 @@ namespace Server.File
 
         private DefaultExercise GetExercise(string line)
         {
-            var v = new DefaultExercise();
+            var v = new DefaultExercise(HandlerOperator.Client);
             string[] a = line.Split(';');
             v.ID = Convert.ToInt32(a[0]);
             v.Question = a[1];

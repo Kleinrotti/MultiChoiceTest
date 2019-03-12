@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.Forms;
+using System;
 using System.Windows.Forms;
 
 namespace Client
@@ -13,14 +14,7 @@ namespace Client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            var ExameSelection = new Forms.FormExamSelection();
-            Application.Run(ExameSelection);
-
-            if(ExameSelection.testStarted)
-            {
-                Application.Run(new Forms.FormMultipleChoiceTest());
-            }
+            Application.Run(new FormExamSelection());
         }
     }
 }

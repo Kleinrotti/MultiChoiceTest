@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace Client.Helpers
+﻿namespace Client.Helpers
 {
     internal static class ControlFillHelper
     {
@@ -11,12 +8,10 @@ namespace Client.Helpers
         //    {
         //        if()
         //        {
-
         //        }
         //    }
         //    catch(Exception e)
         //    {
-
         //    }
         //}
     }
