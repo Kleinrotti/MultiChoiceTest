@@ -11,6 +11,7 @@ namespace Server.File
     {
         private string _path;
         public List<DefaultExercise> Exercises { get; private set; }
+        public List<string> ExamNames { get; private set; }
 
         /// <summary>
         /// Path without filename
@@ -23,7 +24,9 @@ namespace Server.File
 
         public List<string> GetExamNames()
         {
-            return GetExamNames(_path);
+            var v = GetExamNames(_path);
+            ExamNames = v;
+            return v;
         }
 
         public List<DefaultExercise> GetExercises(string filename)

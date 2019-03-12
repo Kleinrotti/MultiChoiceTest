@@ -9,6 +9,7 @@ namespace PacketModel.Connection.EventArguments
         public bool IsConnected { get; set; }
         public int ReceivedBufferSize { get; set; }
         public string IP { get; set; }
+        public TcpClient Client { get; set; }
 
         public ClientConnectionChangedEventArgs(bool connnected)
         {
@@ -19,6 +20,7 @@ namespace PacketModel.Connection.EventArguments
         {
             IsConnected = client.Connected;
             ReceivedBufferSize = client.ReceiveBufferSize;
+            Client = client;
             IP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
         }
 

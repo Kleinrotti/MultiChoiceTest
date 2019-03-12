@@ -130,7 +130,7 @@ namespace Client.Forms
         private void OnPacketReceived(object sender, PacketReceivedEventArgs e)
         {
             PacketHandler h = new PacketHandler();
-            h.ProcessPacket(e.Packet);
+            h.ProcessPacket(e,null);
         }
 
         /// <summary>

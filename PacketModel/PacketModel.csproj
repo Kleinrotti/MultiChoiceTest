@@ -46,6 +46,8 @@
     <Compile Include="Connection\PacketHandler.cs" />
     <Compile Include="Encryption\AESEncrypt.cs" />
     <Compile Include="Enums\ConnectionState.cs" />
+    <Compile Include="Enums\HandlerOperation.cs" />
+    <Compile Include="Models\AvailibleExams.cs" />
     <Compile Include="Models\DefaultAnswer.cs" />
     <Compile Include="Models\DefaultConnectionInfo.cs" />
     <Compile Include="Models\DefaultExercise.cs" />

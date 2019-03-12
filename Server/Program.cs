@@ -12,26 +12,18 @@ namespace Server
 {
     internal class Program
     {
+        static TCPServer _server;
+        static ExecuteSend s;
+        static CsvImport _csv;
+        static string _exampath = @"..\..\Exams\";
         private static void Main(string[] args)
         {
             _server = new TCPServer(IPAddress.Parse("127.0.0.1"), 15000);
             _server.ClientConnectionChanged += OnConnectionChanged;
             _server.PacketReceived += OnPacketReceived;
             _server.Start();
-            GetCsv();
-            s = new ExecuteSend(SendListToClient);
+            
             Console.ReadKey();
-            //server.SendPacket()
-        }
-        static TCPServer _server;
-        private static List<DefaultExercise> _exercises = new List<DefaultExercise>();
-        static ExecuteSend s;
-
-        private static void GetCsv()
-        {
-            CsvImport i = new CsvImport(@"..\..\Exams\");
-            //_exercises = i.GetExercises();
-            var vb = i.GetExamNames();
         }
 
         private static void OnConnectionChanged(object sender, ClientConnectionChangedEventArgs e)
@@ -39,16 +31,34 @@ namespace Server
             PacketHandler h = new PacketHandler();
             h.ProcessConnectionState(e);
         }
-        public delegate void ExecuteSend(TcpClient client);
+        /// <summary>
+        /// Delegate for 
+        /// </summary>
+        /// <param name="client"></param>
+        public delegate void ExecuteSend(TcpClient client, string filename = "");
 
-        private static void SendListToClient(TcpClient client)
+        private static void SendExamListToClient(TcpClient client, string filename = "")
         {
-            _server.SendPacket(client, _exercises);   
+            _csv = new CsvImport(_exampath);
+            _csv.GetExamNames();
+            _server.SendPacket(client, new AvailibleExams(_csv.ExamNames));   
         }
+
+        private static void SendExerciseListToClient(TcpClient client, string filename = "")
+        {
+            Console.WriteLine("SUCCESSS");
+            _csv = new CsvImport(_exampath);
+            var ex = _csv.GetExercises("Exam1.csv");
+            _server.SendPacket(client, ex);
+        }
+        
         private static void OnPacketReceived(object sender, PacketReceivedEventArgs e)
         {
+           
             PacketHandler h = new PacketHandler();
-            h.ProcessPacket(e.Packet, s);
+            s = new ExecuteSend(SendExamListToClient);
+            s += SendExerciseListToClient;
+            h.ProcessPacket(e,s);
         }
     }
 }

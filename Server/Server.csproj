@@ -56,6 +56,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Exams\Dummy Test.csv" />
+    <None Include="Exams\Exam1.csv" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PacketModel\PacketModel.csproj">
