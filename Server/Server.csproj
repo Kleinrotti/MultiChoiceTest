@@ -45,6 +45,11 @@
   <ItemGroup>
     <Compile Include="Connection\Client.cs" />
     <Compile Include="Connection\TCPServer.cs" />
+    <Compile Include="Enums\LogType.cs" />
+    <Compile Include="File\CsvImport.cs" />
+    <Compile Include="File\FileOperation.cs" />
+    <Compile Include="Logging\ExamLog.cs" />
+    <Compile Include="Logging\Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

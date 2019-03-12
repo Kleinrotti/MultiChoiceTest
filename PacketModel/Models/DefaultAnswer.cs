@@ -2,6 +2,9 @@
 
 namespace PacketModel.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     public class DefaultAnswer
     {

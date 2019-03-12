@@ -17,7 +17,6 @@ namespace PacketModel.Translator
             {
                 new BinaryFormatter().Serialize(memoryStream, anySerializableObject);
                 return AESEncrypt.encryptStream(memoryStream.ToArray(), AESEncrypt.Tempkey, AESEncrypt.TempIV);
-                //return memoryStream.ToArray();
             }
         }
 
@@ -32,10 +31,6 @@ namespace PacketModel.Translator
             {
                 return new BinaryFormatter().Deserialize(memoryStream);
             }
-            //using (var memoryStream = new MemoryStream(message))
-            //{
-            //    return new BinaryFormatter().Deserialize(memoryStream);
-            //}
         }
     }
 }

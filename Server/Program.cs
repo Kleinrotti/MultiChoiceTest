@@ -1,6 +1,7 @@
 ﻿using PacketModel.Connection;
 using PacketModel.Connection.EventArguments;
 using Server.Connection;
+using Server.File;
 using System;
 using System.Net;
 
@@ -14,6 +15,8 @@ namespace Server
             server.ClientConnectionChanged += OnConnectionChanged;
             server.PacketReceived += OnPacketReceived;
             server.Start();
+            CsvImport i = new CsvImport(@"..\..\Exams\Dummy Test.csv");
+            i.GetExercises();
             Console.ReadKey();
         }
 
