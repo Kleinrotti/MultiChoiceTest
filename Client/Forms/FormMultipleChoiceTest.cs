@@ -41,6 +41,12 @@ namespace Client.Forms
 
         }
 
+        /// <summary>
+        /// Generate a TabPage for one Exercise
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="question"></param>
+        /// <param name="answers"></param>
         private void CreateTabForExercise(Int32 id, String question, List<String> answers)
         {
             // Create a new TabPage
@@ -110,11 +116,11 @@ namespace Client.Forms
             //newTabPage.Controls.Add(newButton);
         }
 
-        public void button_click(object sender, EventArgs e)
-        {
-            Button buttonClicked = (Button)sender;
-            MessageBox.Show(String.Format("Button with text: {0} clicked!", buttonClicked.Text));
-        }
+        //public void button_click(object sender, EventArgs e)
+        //{
+        //    Button buttonClicked = (Button)sender;
+        //    MessageBox.Show(String.Format("Button with text: {0} clicked!", buttonClicked.Text));
+        //}
 
         /// <summary>
         /// Packet Received Event

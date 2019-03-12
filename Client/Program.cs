@@ -14,9 +14,13 @@ namespace Client
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(new Forms.FormExamSelection());
+            var ExameSelection = new Forms.FormExamSelection();
+            Application.Run(ExameSelection);
 
-            Application.Run(new Forms.FormMultipleChoiceTest());
+            if(ExameSelection.testStarted)
+            {
+                Application.Run(new Forms.FormMultipleChoiceTest());
+            }
         }
     }
 }
