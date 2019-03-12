@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Server.Connection
@@ -18,6 +19,7 @@ namespace Server.Connection
         public byte[] Buffer { get; private set; }
 
         public NetworkStream Networkstream { get { return Tcpclient.GetStream(); } }
+        public IPAddress Ip { get => ((IPEndPoint)Tcpclient.Client.RemoteEndPoint).Address; }
 
         public void ClearBuffer()
         {
