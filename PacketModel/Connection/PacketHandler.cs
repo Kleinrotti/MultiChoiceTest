@@ -61,6 +61,9 @@ namespace PacketModel.Connection
                                 del[1].DynamicInvoke(e.Sender, obj.MessageString);
                                 break;
 
+                            case Command.SetUserName:
+                                break;
+
                             default:
                                 Console.WriteLine("Message: " + ((DefaultMessage)_packet).MessageString);
                                 break;

@@ -13,7 +13,7 @@ namespace Client.Forms
 {
     public partial class FormExamSelection : Form
     {
-        private static IPAddress _ip = IPAddress.Parse("127.0.0.1");
+        private IPAddress _ip;
         private static int _port = 15000;
 
         public bool testStarted = false;
@@ -26,11 +26,17 @@ namespace Client.Forms
         public FormExamSelection()
         {
             InitializeComponent();
+
             btnStartTest.BackColor = Color.FromArgb(158, 158, 158);
+
+            _ip = IPAddress.Parse("127.0.0.1");
+
             _client = new TCPClient();
             _client.Connection += OnConnectionChanged;
             _client.PacketReceived += OnPacketReceived;
             _client.Connect(_ip, _port);
+
+            this.txtUsername.Focus();
         }
 
         /// <summary>
@@ -114,7 +120,7 @@ namespace Client.Forms
         private void Input_TextChanged(object sender, System.EventArgs e)
         {
             // Input completed
-            if (txtUsername.Text != String.Empty /*&& comboExamSelection.Text != String.Empty*/)
+            if (txtUsername.Text != String.Empty && comboExamSelection.Text != String.Empty)
             {
                 btnStartTest.BackColor = Color.FromArgb(76, 175, 80);
                 testStarted = true;
@@ -139,10 +145,28 @@ namespace Client.Forms
                 String UserName = txtUsername.Text;
                 String ExameStartedAt = DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss");
                 String SelectedExame = comboExamSelection.Text;
+
                 DefaultMessage m = new DefaultMessage(HandlerOperator.Server, Command.SendExercises);
                 m.MessageString = SelectedExame;
                 _client.SendPacket(m);
+
+                m = new DefaultMessage(HandlerOperator.Server, Command.SetUserName);
+                m.MessageString = UserName;
+                _client.SendPacket(m);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void changeServerIPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormChangeIP changeIP = new FormChangeIP();
+            changeIP.ShowDialog();
+
+            //changeIP.changedIP
         }
     }
 }

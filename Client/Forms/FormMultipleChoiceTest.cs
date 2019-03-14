@@ -2,10 +2,12 @@
 using PacketModel.Connection;
 using PacketModel.Connection.EventArguments;
 using PacketModel.Models;
+using PacketModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Net;
 
 namespace Client.Forms
 {
@@ -24,6 +26,12 @@ namespace Client.Forms
             InitializeComponent();
             _client = tcpclient;
             _exercises = exercises;
+
+            // Display Exercises
+            for(int i = 0; i < _exercises.Count; i++)
+            {
+                this.CreateTabForExercise(i + 1, _exercises[i].Question, _exercises[i].Answers);
+            }
         }
 
         /// <summary>
@@ -36,7 +44,7 @@ namespace Client.Forms
             //this.CreateClient();
             _connected = true;
 
-            this.CreateTabForExercise(1, "Test Aufgabe.", new List<String> { "test", "tets2", "test", "tets2", "test", "tets2" });
+            //this.CreateTabForExercise(1, "Test Aufgabe.", new List<String> { "test", "tets2", "test", "tets2", "test","tets2", "test", "tets2" });
         }
 
         /// <summary>
@@ -70,6 +78,8 @@ namespace Client.Forms
                 Font = new Font("Arial", 14.25f, FontStyle.Bold)
             };
 
+            newLabel.AutoSize = true;
+
             // Create a new GroupBox
             var newGroupBox = new GroupBox()
             {
@@ -84,23 +94,28 @@ namespace Client.Forms
             int xLocation = 30;
             for (int i = 0; i < answers.Count; i++)
             {
+                //Console.WriteLine(answers[i]);
                 var newAnswers = new RadioButton()
                 {
                     Text = answers[i],
                     Font = new Font("Arial", 12f, FontStyle.Regular),
                     Location = new Point(xLocation, yLocation)
                 };
+
+                newAnswers.AutoSize = true;
+
                 // Increase position
                 yLocation += 40;
+
                 // Add to GroupBox
                 newGroupBox.Controls.Add(newAnswers);
 
                 // Check for second column
-                if (i != 0 && i % 3 == 0)
-                {
-                    yLocation = 40;
-                    xLocation = 410;
-                }
+                //if (i != 0 && i % 3 == 0)
+                //{
+                //    yLocation = 40;
+                //    xLocation = 410;
+                //}
             }
 
             // Add Controls to the new TabPages
@@ -112,6 +127,7 @@ namespace Client.Forms
 
         }
 
+        #region Event Raiser
         /// <summary>
         /// Packet Received Event
         /// </summary>
@@ -135,6 +151,8 @@ namespace Client.Forms
                 label_status.Text = "Verbunden: " + e.IsConnected.ToString();
             }));
         }
+        
+        #endregion
 
         /// <summary>
         /// Send a test message
@@ -149,6 +167,21 @@ namespace Client.Forms
             //    var v = new DefaultConnectionInfo();
             //    v.Message = "Hallo du da";
             //    _client.SendPacket(v);
+        }
+
+        /// <summary>
+        /// Button Send Result
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSendResults_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Sind Sie sicher, dass Sie den Test beenden möchten?", "", MessageBoxButtons.OKCancel);
+
+            if(result == DialogResult.OK)
+            {
+                //DefaultMessage m = new DefaultMessage(HandlerOperator.Server, Command.SendUserAnswers);
+            }
         }
     }
 }

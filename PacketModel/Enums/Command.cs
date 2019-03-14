@@ -8,5 +8,7 @@
         Undefined,
         SendExamList,
         SendExercises,
+        SendUserAnswers,
+        SetUserName
     }
 }

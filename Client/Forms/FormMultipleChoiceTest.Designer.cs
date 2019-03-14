@@ -48,6 +48,7 @@
             this.btnSendResults.TabIndex = 0;
             this.btnSendResults.Text = "Test abschicken";
             this.btnSendResults.UseVisualStyleBackColor = false;
+            this.btnSendResults.Click += new System.EventHandler(this.btnSendResults_Click);
             // 
             // label_status
             // 

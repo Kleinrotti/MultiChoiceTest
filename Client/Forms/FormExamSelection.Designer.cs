@@ -35,8 +35,12 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.connectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeServerIPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStartTest
@@ -45,7 +49,7 @@
             this.btnStartTest.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnStartTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStartTest.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStartTest.Location = new System.Drawing.Point(59, 257);
+            this.btnStartTest.Location = new System.Drawing.Point(59, 289);
             this.btnStartTest.Name = "btnStartTest";
             this.btnStartTest.Size = new System.Drawing.Size(209, 39);
             this.btnStartTest.TabIndex = 1;
@@ -57,7 +61,7 @@
             // 
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.comboExamSelection);
-            this.groupBox1.Location = new System.Drawing.Point(12, 122);
+            this.groupBox1.Location = new System.Drawing.Point(12, 145);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(308, 100);
             this.groupBox1.TabIndex = 6;
@@ -88,7 +92,7 @@
             // 
             this.groupBox2.Controls.Add(this.txtUsername);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Location = new System.Drawing.Point(12, 12);
+            this.groupBox2.Location = new System.Drawing.Point(12, 44);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(308, 79);
             this.groupBox2.TabIndex = 7;
@@ -109,11 +113,36 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(6, 16);
+            this.label2.Location = new System.Drawing.Point(6, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(290, 19);
             this.label2.TabIndex = 6;
             this.label2.Text = "Geben Sie einen Benutzernamen ein.";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.connectionToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(331, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // connectionToolStripMenuItem
+            // 
+            this.connectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.changeServerIPToolStripMenuItem});
+            this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
+            this.connectionToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.connectionToolStripMenuItem.Text = "Connection";
+            // 
+            // changeServerIPToolStripMenuItem
+            // 
+            this.changeServerIPToolStripMenuItem.Name = "changeServerIPToolStripMenuItem";
+            this.changeServerIPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.changeServerIPToolStripMenuItem.Text = "Change Server IP";
+            this.changeServerIPToolStripMenuItem.Click += new System.EventHandler(this.changeServerIPToolStripMenuItem_Click);
             // 
             // FormExamSelection
             // 
@@ -124,6 +153,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnStartTest);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "FormExamSelection";
@@ -134,7 +164,10 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -147,5 +180,8 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changeServerIPToolStripMenuItem;
     }
 }

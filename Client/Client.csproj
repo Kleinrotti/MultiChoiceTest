@@ -47,6 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connection\TCPClient.cs" />
+    <Compile Include="Forms\FormChangeIP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormChangeIP.Designer.cs">
+      <DependentUpon>FormChangeIP.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormExamSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,6 +68,9 @@
     <Compile Include="Helpers\ControlFillHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FormChangeIP.resx">
+      <DependentUpon>FormChangeIP.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormExamSelection.resx">
       <DependentUpon>FormExamSelection.cs</DependentUpon>
     </EmbeddedResource>

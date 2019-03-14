@@ -31,18 +31,21 @@ namespace Server
         /// <param name="args"></param>
         private static void Main(string[] args)
         {
-            Console.WindowHeight = 22;
-            Console.WindowWidth = 100;
+            Console.WindowHeight = 20;
+            Console.WindowWidth = 80;
 
             _server = new TCPServer(_ip, _port);
             _server.ClientConnectionChanged += OnConnectionChanged;
             _server.PacketReceived += OnPacketReceived;
             _server.Start();
+
             _log = new Log();
             _log.ConsoleOutput = true;
-            Console.ReadKey();
+
+            while(true);
         }
 
+        #region Event Raiser
         /// <summary>
         /// If connection state has changed.
         /// </summary>
@@ -53,6 +56,21 @@ namespace Server
             PacketHandler h = new PacketHandler();
             _log.AppendToLog(h.ProcessConnectionState(e), LogType.Connection);
         }
+
+        /// <summary>
+        /// If server received packets.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnPacketReceived(object sender, PacketReceivedEventArgs e)
+        {
+            PacketHandler h = new PacketHandler();
+            del = new ExecuteSend(SendExamListToClient);
+            del += SendExercisesToClient;
+            h.ProcessPacket(e, del);
+        }
+
+        #endregion
 
         /// <summary>
         /// Send exam list to client.
@@ -67,7 +85,7 @@ namespace Server
             var list = _csv.GetExamNames();
             _server.SendPacket(client, new AvailibleExams(HandlerOperator.Client, list));
         }
-
+        
         /// <summary>
         /// Send exercises to client, depending on selected exam.
         /// </summary>
@@ -80,19 +98,6 @@ namespace Server
             _csv = new CsvImport(_exampath);
             var ex = _csv.GetExercises(filename);
             _server.SendPacket(client, ex);
-        }
-
-        /// <summary>
-        /// If server received packets.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void OnPacketReceived(object sender, PacketReceivedEventArgs e)
-        {
-            PacketHandler h = new PacketHandler();
-            del = new ExecuteSend(SendExamListToClient);
-            del += SendExercisesToClient;
-            h.ProcessPacket(e, del);
         }
     }
 }
