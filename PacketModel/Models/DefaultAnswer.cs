@@ -1,5 +1,4 @@
-﻿using PacketModel.Enums;
-using System;
+﻿using System;
 
 namespace PacketModel.Models
 {
@@ -11,15 +10,13 @@ namespace PacketModel.Models
     {
         public int ID { get; set; }
         public int ResultIndex { get; set; }
-        public HandlerOperator Operator { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultAnswer"/> class.
         /// </summary>
         /// <param name="op"></param>
-        public DefaultAnswer(HandlerOperator op)
+        public DefaultAnswer()
         {
-            Operator = op;
         }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using Client.Connection;
-using PacketModel.Connection;
+using Client.Handler;
 using PacketModel.Connection.EventArguments;
 using PacketModel.Models;
-using PacketModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Net;
 
 namespace Client.Forms
 {
@@ -17,6 +15,11 @@ namespace Client.Forms
 
         private bool _connected = false;
         private List<DefaultExercise> _exercises;
+        private ExecuteTask _del;
+
+        public event EventHandler NewTest;
+
+        private delegate void ExecuteTask(object obj);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormMultipleChoiceTest"/> class.
@@ -25,26 +28,73 @@ namespace Client.Forms
         {
             InitializeComponent();
             _client = tcpclient;
+            _connected = _client.IsConnected;
+            _client.Connection += OnConnectionChanged;
+            _client.PacketReceived += OnPacketReceived;
             _exercises = exercises;
+        }
 
+        private void FormMultipleChoiceTest_Load(object sender, EventArgs e)
+        {
             // Display Exercises
-            for(int i = 0; i < _exercises.Count; i++)
+            for (int i = 0; i < _exercises.Count; i++)
             {
                 this.CreateTabForExercise(i + 1, _exercises[i].Question, _exercises[i].Answers);
             }
         }
 
+        #region Event Raiser
+
+        private void OnNewTest(object sender, EventArgs e)
+        {
+            NewTest?.Invoke(this, e);
+        }
+
         /// <summary>
-        /// Form Load Event
+        /// Packet Received Event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FormMultipleChoiceTest_Load(object sender, EventArgs e)
+        private void OnPacketReceived(object sender, PacketReceivedEventArgs e)
         {
-            //this.CreateClient();
-            _connected = true;
+            Console.WriteLine("bruh");
+            PacketHandler h = new PacketHandler();
+            _del = new ExecuteTask(ShowExamResult);
+            h.ProcessPacket(e, _del);
+        }
 
-            //this.CreateTabForExercise(1, "Test Aufgabe.", new List<String> { "test", "tets2", "test", "tets2", "test","tets2", "test", "tets2" });
+        /// <summary>
+        /// Connection state has changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnConnectionChanged(object sender, ClientConnectionChangedEventArgs e)
+        {
+            if (_connected == true && e.IsConnected == false)
+            {
+                MessageBox.Show("Connection lost");
+                Invoke(new Action(() =>
+                {
+                    tabControlExam.Enabled = false;
+                    btnSendResults.Enabled = false;
+                    button_selectnewtest.Visible = false;
+                }));
+            }
+            _connected = e.IsConnected;
+        }
+
+        #endregion Event Raiser
+
+        private void ShowExamResult(object obj)
+        {
+            MessageBox.Show((string)obj);
+            Invoke(new Action((() =>
+            {
+                button_selectnewtest.Visible = true;
+                tabControlExam.Enabled = false;
+                btnCancel.Visible = false;
+                btnSendResults.Visible = false;
+            })));
         }
 
         /// <summary>
@@ -57,7 +107,7 @@ namespace Client.Forms
         {
             string tabPageText = "";
 
-            if(id < 10)
+            if (id < 10)
                 tabPageText = "#0" + id.ToString();
             else
                 tabPageText = "#" + id.ToString();
@@ -125,49 +175,6 @@ namespace Client.Forms
 
             //Add the generated TabPage to the TabControl
             tabControlExam.TabPages.Add(newTabPage);
-
-        }
-
-        #region Event Raiser
-        /// <summary>
-        /// Packet Received Event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnPacketReceived(object sender, PacketReceivedEventArgs e)
-        {
-            PacketHandler h = new PacketHandler();
-            h.ProcessPacket(e, null);
-        }
-
-        /// <summary>
-        /// Connection state has changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnConnectionChanged(object sender, ClientConnectionChangedEventArgs e)
-        {
-            Invoke(new Action(() =>
-            {
-                label_status.Text = "Verbunden: " + e.IsConnected.ToString();
-            }));
-        }
-        
-        #endregion
-
-        /// <summary>
-        /// Send a test message
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //    if (!_connected)
-            //        return;
-
-            //    var v = new DefaultConnectionInfo();
-            //    v.Message = "Hallo du da";
-            //    _client.SendPacket(v);
         }
 
         /// <summary>
@@ -179,28 +186,26 @@ namespace Client.Forms
         {
             DialogResult result = MessageBox.Show("Sind Sie sicher, dass Sie den Test beenden möchten?", "", MessageBoxButtons.OKCancel);
 
-            if(result == DialogResult.OK)
+            if (result == DialogResult.OK)
             {
                 DefaultAnswer answer;
                 List<DefaultAnswer> answers = new List<DefaultAnswer>();
 
-
-                foreach(TabPage exercise in tabControlExam.TabPages) 
-                {                    
-                    foreach(Control c in exercise.Controls)
+                foreach (TabPage exercise in tabControlExam.TabPages)
+                {
+                    foreach (Control c in exercise.Controls)
                     {
-                        if(c.GetType().Name == "GroupBox")
+                        if (c.GetType() == typeof(GroupBox))
                         {
-                            foreach(RadioButton r in c.Controls)
+                            foreach (RadioButton r in c.Controls)
                             {
-                                if(r.Checked == true)
+                                if (r.Checked == true)
                                 {
-                                    answer = new DefaultAnswer(HandlerOperator.Server) {
+                                    answer = new DefaultAnswer()
+                                    {
                                         ID = Convert.ToInt32(exercise.Name) - 1,
                                         ResultIndex = Convert.ToInt32(r.Name)
                                     };
-                                    //MessageBox.Show("ID: " + answer.ID.ToString() + "\nResultIndex: " + r.Name.ToString());
-
                                     answers.Add(answer);
                                 }
                             }
@@ -209,6 +214,18 @@ namespace Client.Forms
                 }
                 _client.SendPacket(answers);
             }
+        }
+
+        private void FormMultipleChoiceTest_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void button_selectnewtest_Click(object sender, EventArgs e)
+        {
+            _client.Connection -= OnConnectionChanged;
+            _client.PacketReceived -= OnPacketReceived;
+            OnNewTest(this, new EventArgs());
         }
     }
 }

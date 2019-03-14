@@ -1,6 +1,6 @@
-﻿using Server.Connection;
-using Server.Enums;
+﻿using Server.Enums;
 using System;
+using System.Net;
 
 namespace Server.Logging
 {
@@ -8,40 +8,27 @@ namespace Server.Logging
     {
         private string _path = "examlog";
         public override string Path { get => _path; protected set => _path = value; }
-        private Client _client;
-        private int _questionId;
-        private bool _answer;
+        private IPAddress _address;
+        private int _exerciseAmount;
+        private int _correctAnswers;
 
-        /// <summary>
-        /// Ergebnis eines Exams vom Client ins Log schreiben
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="questionId"></param>
-        /// <param name="answer"></param>
-        public void AppendToLog(Client client, int questionId, bool answer)
+        public void AppendToLog(IPAddress address, int exerciseamount, int correctanswers)
         {
-            _client = client;
-            _questionId = questionId;
-            _answer = answer;
+            _address = address;
+            _exerciseAmount = exerciseamount;
+            _correctAnswers = correctanswers;
             base.AppendToLog(ParseClient(), LogType.Exam);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         private string ParseClient()
         {
-            return _client.Ip.ToString() + ";" + _questionId + ";" + _answer;
+            return "Client: " + _address.ToString() + " has " + _correctAnswers + " out of " + _exerciseAmount + " points";
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public override void Dispose()
         {
             _path = null;
-            _client = null;
+            _address = null;
             base.Dispose();
         }
     }

@@ -85,6 +85,7 @@ namespace Server.Connection
                 }
             }
         }
+
         public string GetExamFileName(TcpClient client)
         {
             foreach (Client c in clients)
@@ -95,6 +96,19 @@ namespace Server.Connection
                 }
             }
             return string.Empty;
+        }
+
+        public IPAddress GetIpFromClient(TcpClient client)
+        {
+            foreach (Client c in clients)
+            {
+                if (c.Tcpclient == client)
+                {
+                    return c.Ip;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -267,7 +281,7 @@ namespace Server.Connection
                     tcpListener.BeginAcceptTcpClient(acceptTcpClientCallback, null);
                 }
             }
-            catch (Exception ex)
+            catch (SocketException ex)
             {
                 throw new Exception("Fehler beim Verbindungsversuch eines Clienten.", ex);
             }

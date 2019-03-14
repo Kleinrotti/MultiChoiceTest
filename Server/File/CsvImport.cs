@@ -1,5 +1,4 @@
-﻿using PacketModel.Enums;
-using PacketModel.Models;
+﻿using PacketModel.Models;
 using System;
 using System.Collections.Generic;
 
@@ -57,7 +56,7 @@ namespace Server.File
         /// <returns></returns>
         private DefaultExercise GetExercise(string line)
         {
-            var v = new DefaultExercise(HandlerOperator.Client);
+            var v = new DefaultExercise();
             string[] a = line.Split(';');
             v.ID = Convert.ToInt32(a[0]);
             v.Question = a[1];

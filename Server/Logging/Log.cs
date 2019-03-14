@@ -28,15 +28,14 @@ namespace Server.Logging
         public virtual void AppendToLog(string text, LogType type)
         {
             var timestamp = DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss");
-
-            string content = type.ToString() + ";" + timestamp + ";" + text;
+            var log = type.ToString() + ";" + timestamp + ";" + text;
             if (ConsoleOutput)
                 Console.WriteLine(type.ToString() + ": " + text + " at " + timestamp);
-            WriteLineToFile(_path, content);
+            WriteLineToFile(Path, log);
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public virtual void Dispose()
         {

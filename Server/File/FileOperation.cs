@@ -10,6 +10,7 @@ namespace Server.File
     internal class FileOperation
     {
         protected List<string> Lines { get; private set; }
+        private static object _lockObject = new object();
 
         /// <summary>
         /// Reading a complete file line by line. Saved in List Lines
@@ -51,60 +52,41 @@ namespace Server.File
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="path"></param>
         /// <param name="content"></param>
         protected void WriteLineToFile(string path, string content)
         {
-            int count = 0;
-            while (!IsFileReady(path))
+            lock (_lockObject)
             {
-                if (count == 1000)
-                    break;
-                count++;
-            }
-            using (FileStream fs = System.IO.File.Open(path, FileMode.Append, FileAccess.Write))
-            {
-                using (StreamWriter w = new StreamWriter(fs))
+                using (FileStream fs = System.IO.File.Open(path, FileMode.Append, FileAccess.Write))
                 {
-                    w.WriteLine(content);
+                    using (StreamWriter w = new StreamWriter(fs))
+                    {
+                        w.WriteLine(content);
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        protected bool IsFileReady(string path)
-        {
-            try
-            {
-                using (FileStream inputStream = System.IO.File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None))
-                    return inputStream.Length > 0;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="path"></param>
         /// <param name="list"></param>
         protected void WriteListToFile(string path, List<string> list)
         {
-            using (FileStream fs = System.IO.File.Open(path, FileMode.Append, FileAccess.Write))
+            lock (_lockObject)
             {
-                using (StreamWriter w = new StreamWriter(fs))
+                using (FileStream fs = System.IO.File.Open(path, FileMode.Append, FileAccess.Write))
                 {
-                    foreach (var s in list)
+                    using (StreamWriter w = new StreamWriter(fs))
                     {
-                        w.WriteLine(s);
+                        foreach (var s in list)
+                        {
+                            w.WriteLine(s);
+                        }
                     }
                 }
             }

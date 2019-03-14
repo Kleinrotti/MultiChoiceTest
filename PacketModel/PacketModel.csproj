@@ -43,10 +43,8 @@
   <ItemGroup>
     <Compile Include="Connection\EventArguments\ClientConnectionChangedEventArgs.cs" />
     <Compile Include="Connection\EventArguments\PacketReceivedEventArgs.cs" />
-    <Compile Include="Connection\PacketHandler.cs" />
     <Compile Include="Encryption\AESEncrypt.cs" />
     <Compile Include="Enums\ConnectionState.cs" />
-    <Compile Include="Enums\HandlerOperator.cs" />
     <Compile Include="Enums\Command.cs" />
     <Compile Include="IPacket.cs" />
     <Compile Include="Models\AvailibleExams.cs" />

@@ -1,10 +1,10 @@
-﻿using PacketModel.Connection;
-using PacketModel.Connection.EventArguments;
+﻿using PacketModel.Connection.EventArguments;
 using PacketModel.Enums;
 using PacketModel.Models;
 using Server.Connection;
 using Server.Enums;
 using Server.File;
+using Server.Handler;
 using Server.Helper;
 using Server.Logging;
 using System;
@@ -25,7 +25,7 @@ namespace Server
         private static string _exampath = @"..\..\Exams\";
         private static Log _log;
 
-        public delegate void ExecuteSend(TcpClient client, object data);
+        private delegate void ExecuteSend(TcpClient client, object data);
 
         /// <summary>
         /// Server Main method
@@ -44,10 +44,11 @@ namespace Server
             _log = new Log();
             _log.ConsoleOutput = true;
 
-            while(true);
+            while (true) ;
         }
 
         #region Event Raiser
+
         /// <summary>
         /// If connection state has changed.
         /// </summary>
@@ -73,7 +74,7 @@ namespace Server
             h.ProcessPacket(e, del);
         }
 
-        #endregion
+        #endregion Event Raiser
 
         /// <summary>
         /// Send exam list to client.
@@ -82,12 +83,11 @@ namespace Server
         /// <param name="filename"></param>
         private static void SendExamListToClient(TcpClient client, object data)
         {
-            
             _log.AppendToLog("Sending exam list to client: " +
                              ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString(), LogType.Info);
             _csv = new CsvImport(_exampath);
             var list = _csv.GetExamNames();
-            _server.SendPacket(client, new AvailibleExams(HandlerOperator.Client, list));
+            _server.SendPacket(client, new AvailibleExams(list));
         }
 
         private static void ProcessAnswers(TcpClient client, object data)
@@ -95,15 +95,20 @@ namespace Server
             _csv = new CsvImport(_exampath);
             var filename = _server.GetExamFileName(client);
             var list = _csv.GetExercises(filename);
-            var result = ExerciseResultHelper.ProcessResult((List<DefaultAnswer>)data, list);
-            var msg = new DefaultMessage(HandlerOperator.Client, Command.SendUserAnswers)
+            var erh = new ExerciseResultHelper();
+            var result = erh.ProcessResult((List<DefaultAnswer>)data, list);
+            var msg = new DefaultMessage(Command.SendUserAnswers)
             {
                 MessageString = result
             };
-            _log.AppendToLog(result, LogType.Exam);
-            _server.SendPacket(client,msg);
+            var examlog = new ExamLog
+            {
+                ConsoleOutput = true
+            };
+            examlog.AppendToLog(_server.GetIpFromClient(client), erh.ExistingAnswers, erh.CorrectAnswers);
+            _server.SendPacket(client, msg);
         }
-        
+
         /// <summary>
         /// Send exercises to client, depending on selected exam.
         /// </summary>

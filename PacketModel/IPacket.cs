@@ -1,9 +1,6 @@
-﻿using PacketModel.Enums;
-
-namespace PacketModel
+﻿namespace PacketModel
 {
     public interface IPacket
     {
-        HandlerOperator Operator { get; set; }
     }
 }

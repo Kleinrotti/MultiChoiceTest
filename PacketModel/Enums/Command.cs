@@ -1,7 +1,7 @@
 ﻿namespace PacketModel.Enums
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public enum Command
     {

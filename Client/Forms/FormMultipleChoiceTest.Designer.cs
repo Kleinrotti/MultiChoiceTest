@@ -30,9 +30,9 @@
         {
             this.btnSendResults = new System.Windows.Forms.Button();
             this.label_status = new System.Windows.Forms.Label();
-            this.button_sendtest = new System.Windows.Forms.Button();
             this.tabControlExam = new System.Windows.Forms.TabControl();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.button_selectnewtest = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnSendResults
@@ -55,18 +55,8 @@
             this.label_status.AutoSize = true;
             this.label_status.Location = new System.Drawing.Point(11, 488);
             this.label_status.Name = "label_status";
-            this.label_status.Size = new System.Drawing.Size(0, 17);
+            this.label_status.Size = new System.Drawing.Size(0, 26);
             this.label_status.TabIndex = 1;
-            // 
-            // button_sendtest
-            // 
-            this.button_sendtest.Location = new System.Drawing.Point(359, 396);
-            this.button_sendtest.Name = "button_sendtest";
-            this.button_sendtest.Size = new System.Drawing.Size(140, 41);
-            this.button_sendtest.TabIndex = 3;
-            this.button_sendtest.Text = "Test Nachricht";
-            this.button_sendtest.UseVisualStyleBackColor = true;
-            this.button_sendtest.Click += new System.EventHandler(this.button1_Click);
             // 
             // tabControlExam
             // 
@@ -92,23 +82,41 @@
             this.btnCancel.Text = "Test abbrechen";
             this.btnCancel.UseVisualStyleBackColor = false;
             // 
+            // button_selectnewtest
+            // 
+            this.button_selectnewtest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(213)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.button_selectnewtest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_selectnewtest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_selectnewtest.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_selectnewtest.Location = new System.Drawing.Point(321, 390);
+            this.button_selectnewtest.Margin = new System.Windows.Forms.Padding(4);
+            this.button_selectnewtest.Name = "button_selectnewtest";
+            this.button_selectnewtest.Size = new System.Drawing.Size(244, 51);
+            this.button_selectnewtest.TabIndex = 6;
+            this.button_selectnewtest.Text = "Neuen Test";
+            this.button_selectnewtest.UseVisualStyleBackColor = false;
+            this.button_selectnewtest.Visible = false;
+            this.button_selectnewtest.Click += new System.EventHandler(this.button_selectnewtest_Click);
+            // 
             // FormMultipleChoiceTest
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 26F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(889, 449);
+            this.Controls.Add(this.button_selectnewtest);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.tabControlExam);
-            this.Controls.Add(this.button_sendtest);
             this.Controls.Add(this.label_status);
             this.Controls.Add(this.btnSendResults);
             this.Font = new System.Drawing.Font("Arial", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
             this.Name = "FormMultipleChoiceTest";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Multiple Choice Test";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMultipleChoiceTest_FormClosed);
             this.Load += new System.EventHandler(this.FormMultipleChoiceTest_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -119,8 +127,8 @@
 
         private System.Windows.Forms.Button btnSendResults;
         private System.Windows.Forms.Label label_status;
-        private System.Windows.Forms.Button button_sendtest;
         private System.Windows.Forms.TabControl tabControlExam;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button button_selectnewtest;
     }
 }

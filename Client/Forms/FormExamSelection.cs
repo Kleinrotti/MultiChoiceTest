@@ -1,5 +1,5 @@
 ﻿using Client.Connection;
-using PacketModel.Connection;
+using Client.Handler;
 using PacketModel.Connection.EventArguments;
 using PacketModel.Enums;
 using PacketModel.Models;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Client.Forms
@@ -16,13 +17,11 @@ namespace Client.Forms
         private IPAddress _ip;
         private static int _port = 15000;
 
-        public bool testStarted = false;
+        private bool _testStarted = false;
         private bool _isconnected = false;
         private TCPClient _client;
+        private FormMultipleChoiceTest _formchoicetest;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FormExamSelection"/> class.
-        /// </summary>
         public FormExamSelection()
         {
             InitializeComponent();
@@ -30,25 +29,33 @@ namespace Client.Forms
             btnStartTest.BackColor = Color.FromArgb(158, 158, 158);
 
             _ip = IPAddress.Parse("127.0.0.1");
-
-            
         }
 
-        /// <summary>
-        /// Form Load
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void FormExamSelection_Load(object sender, EventArgs e)
         {
             _client = new TCPClient();
             _client.Connection += OnConnectionChanged;
             _client.PacketReceived += OnPacketReceived;
             _client.Connect(_ip, _port);
-
+            if (!GetExamList())
+            {
+                MessageBox.Show("Connection to server failed");
+            }
             this.txtUsername.Focus();
-            var v = new DefaultMessage(HandlerOperator.Server, Command.SendExamList);
-            _client.SendPacket(v);
+        }
+
+        private bool GetExamList()
+        {
+            var v = new DefaultMessage(Command.SendExamList);
+            //wait three connection attempts
+            for (int i = 0; i < 3; i++)
+            {
+                if (_client.SendPacket(v))
+                    return true;
+                i++;
+                Thread.Sleep(200);
+            }
+            return false;
         }
 
         public delegate void ExecuteTask(object o);
@@ -62,6 +69,7 @@ namespace Client.Forms
             var ad = examnames as List<string>;
             Invoke(new Action(() =>
             {
+                comboExamSelection.Items.Clear();
                 foreach (var v in ad)
                 {
                     comboExamSelection.Items.Add(v);
@@ -71,23 +79,30 @@ namespace Client.Forms
             }));
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="exercises"></param>
         private void GetExercises(object exercises)
         {
             var ex = exercises as List<DefaultExercise>;
             if (ex != null)
             {
+                _client.Connection -= OnConnectionChanged;
+                _client.PacketReceived -= OnPacketReceived;
                 Invoke(new Action(() =>
                 {
                     Hide();
-                    FormMultipleChoiceTest test = new FormMultipleChoiceTest(_client, ex);
-                    test.ShowDialog();
-                    Close();
+                    _formchoicetest = new FormMultipleChoiceTest(_client, ex);
+                    _formchoicetest.NewTest += OnNewTest;
+                    _formchoicetest.Show();
                 }));
             }
+        }
+
+        private void OnNewTest(object sender, EventArgs e)
+        {
+            _formchoicetest.Dispose();
+            _client.Connection += OnConnectionChanged;
+            _client.PacketReceived += OnPacketReceived;
+            GetExamList();
+            Show();
         }
 
         /// <summary>
@@ -124,13 +139,13 @@ namespace Client.Forms
             if (txtUsername.Text != String.Empty && comboExamSelection.Text != String.Empty)
             {
                 btnStartTest.BackColor = Color.FromArgb(76, 175, 80);
-                testStarted = true;
+                _testStarted = true;
             }
             // Input incompleted
             else
             {
                 btnStartTest.BackColor = Color.FromArgb(158, 158, 158);
-                testStarted = false;
+                _testStarted = false;
             }
         }
 
@@ -141,24 +156,24 @@ namespace Client.Forms
         /// <param name="e"></param>
         private void btnStartTest_Click(object sender, EventArgs e)
         {
-            if (testStarted)
+            if (_testStarted)
             {
                 String UserName = txtUsername.Text;
                 String ExameStartedAt = DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss");
                 String SelectedExame = comboExamSelection.Text;
 
-                DefaultMessage m = new DefaultMessage(HandlerOperator.Server, Command.SendExercises);
+                DefaultMessage m = new DefaultMessage(Command.SendExercises);
                 m.MessageString = SelectedExame;
                 _client.SendPacket(m);
 
-                m = new DefaultMessage(HandlerOperator.Server, Command.SetUserName);
+                m = new DefaultMessage(Command.SetUserName);
                 m.MessageString = UserName;
                 _client.SendPacket(m);
             }
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

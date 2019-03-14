@@ -160,11 +160,11 @@ namespace Client.Connection
         /// Sendet ein object an den Server.
         /// </summary>
         /// <param name="bytes"></param>
-        public void SendPacket(object data)
+        public bool SendPacket(object data)
         {
             // Wenn der Client nicht verbunden ist kann nichts gesendet werden.
             if (!tcpClient.Connected)
-                return;
+                return false;
 
             try
             {
@@ -172,9 +172,14 @@ namespace Client.Connection
                 NetworkStream networkStream = tcpClient.GetStream();
                 var d = PacketSerializer.Serialize(data);
                 networkStream.BeginWrite(d, 0, d.Length, SendCallback, null);
+                return true;
             }
             catch (Exception ex)
             {
+                if (ex.InnerException is SocketException)
+                {
+                    return false;
+                }
                 throw new Exception("Fehler beim Senden des Paketes.", ex);
             }
         }
