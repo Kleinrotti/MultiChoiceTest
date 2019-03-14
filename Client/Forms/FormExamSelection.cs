@@ -1,5 +1,6 @@
 ﻿using Client.Connection;
 using Client.Handler;
+using Client.Helpers;
 using PacketModel.Connection.EventArguments;
 using PacketModel.Enums;
 using PacketModel.Models;
@@ -9,7 +10,6 @@ using System.Drawing;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
-using Client.Helpers;
 
 namespace Client.Forms
 {

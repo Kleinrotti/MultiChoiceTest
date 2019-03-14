@@ -16,7 +16,7 @@ namespace Server
 {
     internal class Program
     {
-        private static IPAddress _ip = IPAddress.Parse("127.0.0.1");
+        private static IPAddress _ip;
         private static int _port = 15000;
 
         private static TCPServer _server;
@@ -27,20 +27,34 @@ namespace Server
 
         private delegate void ExecuteSend(TcpClient client, object data);
 
-        /// <summary>
-        /// Server Main method
-        /// </summary>
-        /// <param name="args"></param>
         private static void Main(string[] args)
         {
             Console.WindowHeight = 20;
             Console.WindowWidth = 80;
+        again:
+            Console.WriteLine("---SET LOKAL IP:---");
+            var ip = Console.ReadLine();
+            if (ip == string.Empty)
+                goto again;
+            try
+            {
+                _ip = IPAddress.Parse(ip);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                goto again;
+            }
+            Console.WriteLine("---SET PATH TO EXAMS (leave empty for default):---");
+            var exams = Console.ReadLine();
+            if (exams != string.Empty)
+                _exampath = exams;
 
             _server = new TCPServer(_ip, _port);
             _server.ClientConnectionChanged += OnConnectionChanged;
             _server.PacketReceived += OnPacketReceived;
             _server.Start();
-
+            Console.WriteLine("Server started");
             _log = new Log();
             _log.ConsoleOutput = true;
 
@@ -90,6 +104,11 @@ namespace Server
             _server.SendPacket(client, new AvailibleExams(list));
         }
 
+        /// <summary>
+        /// Process received answers from client and sending the result back
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="data"></param>
         private static void ProcessAnswers(TcpClient client, object data)
         {
             _csv = new CsvImport(_exampath);

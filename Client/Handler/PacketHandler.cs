@@ -25,7 +25,6 @@ namespace Client.Handler
                 if (type == typeof(List<DefaultExercise>))
                 {
                     var v = _packet as List<DefaultExercise>;
-                    Console.WriteLine("Client received exercises");
                     del[1].DynamicInvoke(v);
                     return;
                 }
@@ -33,7 +32,6 @@ namespace Client.Handler
                 else if (type == typeof(AvailibleExams))
                 {
                     var v = _packet as AvailibleExams;
-                    Console.WriteLine("Client received exam names " + v.ExamNames[0]);
                     del[0].DynamicInvoke(v.ExamNames);
                 }
                 else if (type == typeof(DefaultMessage))
