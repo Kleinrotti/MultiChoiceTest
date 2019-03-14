@@ -98,6 +98,7 @@ namespace Client.Forms
                 var newAnswers = new RadioButton()
                 {
                     Text = answers[i],
+                    Name = i.ToString(),
                     Font = new Font("Arial", 12f, FontStyle.Regular),
                     Location = new Point(xLocation, yLocation)
                 };
@@ -180,7 +181,27 @@ namespace Client.Forms
 
             if(result == DialogResult.OK)
             {
-                //DefaultMessage m = new DefaultMessage(HandlerOperator.Server, Command.SendUserAnswers);
+                DefaultAnswer answer = new DefaultAnswer(HandlerOperator.Server);
+                List<DefaultAnswer> answers = new List<DefaultAnswer>();
+
+
+                foreach(TabPage exercise in tabControlExam.TabPages) 
+                {
+                    answer.ID = Convert.ToInt32(exercise.Name);
+
+                    foreach(Control c in exercise.Controls)
+                    {
+                        if(c.GetType().Name == "GroupBox")
+                        {
+                            foreach(RadioButton r in c.Controls)
+                            {
+                                if(r.Checked == true)
+                                    answer.ResultIndex = Convert.ToInt32(r.Name);
+                            }
+                        }
+                    }
+                    answers.Add(answer);
+                }
             }
         }
     }
