@@ -48,6 +48,7 @@
     <Compile Include="Enums\LogType.cs" />
     <Compile Include="File\CsvImport.cs" />
     <Compile Include="File\FileOperation.cs" />
+    <Compile Include="Helper\ExerciseResultHelper.cs" />
     <Compile Include="Logging\ExamLog.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Program.cs" />

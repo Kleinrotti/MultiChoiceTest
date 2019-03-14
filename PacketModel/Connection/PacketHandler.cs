@@ -34,6 +34,12 @@ namespace PacketModel.Connection
                         del[1].DynamicInvoke(v);
                         return;
                     }
+                    //Server will check the answers from client
+                    else if (type == typeof(List<DefaultAnswer>))
+                    {
+                        var v = _packet as List<DefaultAnswer>;
+                        del[2].DynamicInvoke(e.Sender, v);
+                    }
                 }
                 //Packet needs to be handled by client
                 if (((IPacket)_packet).Operator == HandlerOperator.Client)
@@ -61,7 +67,7 @@ namespace PacketModel.Connection
                                 del[1].DynamicInvoke(e.Sender, obj.MessageString);
                                 break;
 
-                            case Command.SetUserName:
+                            case Command.SendUserAnswers:
                                 break;
 
                             default:
@@ -69,11 +75,7 @@ namespace PacketModel.Connection
                                 break;
                         }
                     }
-                    //Server will check the answers from client
-                    else if (type == typeof(List<DefaultAnswer>))
-                    {
-                        var v = _packet as List<DefaultAnswer>;
-                    }
+                    
                 }
             }
             catch (Exception ex)

@@ -5,8 +5,10 @@ using PacketModel.Models;
 using Server.Connection;
 using Server.Enums;
 using Server.File;
+using Server.Helper;
 using Server.Logging;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
@@ -23,7 +25,7 @@ namespace Server
         private static string _exampath = @"..\..\Exams\";
         private static Log _log;
 
-        public delegate void ExecuteSend(TcpClient client, string filename);
+        public delegate void ExecuteSend(TcpClient client, object data);
 
         /// <summary>
         /// Server Main method
@@ -67,6 +69,7 @@ namespace Server
             PacketHandler h = new PacketHandler();
             del = new ExecuteSend(SendExamListToClient);
             del += SendExercisesToClient;
+            del += ProcessAnswers;
             h.ProcessPacket(e, del);
         }
 
@@ -77,13 +80,28 @@ namespace Server
         /// </summary>
         /// <param name="client"></param>
         /// <param name="filename"></param>
-        private static void SendExamListToClient(TcpClient client, string filename)
+        private static void SendExamListToClient(TcpClient client, object data)
         {
+            
             _log.AppendToLog("Sending exam list to client: " +
                              ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString(), LogType.Info);
             _csv = new CsvImport(_exampath);
             var list = _csv.GetExamNames();
             _server.SendPacket(client, new AvailibleExams(HandlerOperator.Client, list));
+        }
+
+        private static void ProcessAnswers(TcpClient client, object data)
+        {
+            _csv = new CsvImport(_exampath);
+            var filename = _server.GetExamFileName(client);
+            var list = _csv.GetExercises(filename);
+            var result = ExerciseResultHelper.ProcessResult((List<DefaultAnswer>)data, list);
+            var msg = new DefaultMessage(HandlerOperator.Client, Command.SendUserAnswers)
+            {
+                MessageString = result
+            };
+            _log.AppendToLog(result, LogType.Exam);
+            _server.SendPacket(msg);
         }
         
         /// <summary>
@@ -91,12 +109,13 @@ namespace Server
         /// </summary>
         /// <param name="client"></param>
         /// <param name="filename"></param>
-        private static void SendExercisesToClient(TcpClient client, string filename)
+        private static void SendExercisesToClient(TcpClient client, object data)
         {
+            _server.SetExamFileName(client, (string)data);
             _log.AppendToLog("Sending exercises to client: " +
                              ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString(), LogType.Info);
             _csv = new CsvImport(_exampath);
-            var ex = _csv.GetExercises(filename);
+            var ex = _csv.GetExercises((string)data);
             _server.SendPacket(client, ex);
         }
     }

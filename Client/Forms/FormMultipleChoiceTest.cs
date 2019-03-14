@@ -199,7 +199,7 @@ namespace Client.Forms
                                         ID = Convert.ToInt32(exercise.Name) - 1,
                                         ResultIndex = Convert.ToInt32(r.Name)
                                     };
-                                    MessageBox.Show("ID: " + answer.ID.ToString() + "\nResultIndex: " + r.Name.ToString());
+                                    //MessageBox.Show("ID: " + answer.ID.ToString() + "\nResultIndex: " + r.Name.ToString());
 
                                     answers.Add(answer);
                                 }

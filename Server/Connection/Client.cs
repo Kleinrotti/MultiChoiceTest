@@ -22,6 +22,7 @@ namespace Server.Connection
         public TcpClient Tcpclient { get; private set; }
 
         public byte[] Buffer { get; private set; }
+        public string ExamFileName { get; set; }
 
         public NetworkStream Networkstream { get { return Tcpclient.GetStream(); } }
         public IPAddress Ip { get => ((IPEndPoint)Tcpclient.Client.RemoteEndPoint).Address; }

@@ -71,6 +71,33 @@ namespace Server.Connection
         #endregion Properties
 
         /// <summary>
+        /// Save received exam selection
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="examfilename"></param>
+        public void SetExamFileName(TcpClient client, string examfilename)
+        {
+            foreach (Client c in clients)
+            {
+                if (c.Tcpclient == client)
+                {
+                    c.ExamFileName = examfilename;
+                }
+            }
+        }
+        public string GetExamFileName(TcpClient client)
+        {
+            foreach (Client c in clients)
+            {
+                if (c.Tcpclient == client)
+                {
+                    return c.ExamFileName;
+                }
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Konstruktor der IP & Port einzeln akzeptiert.
         /// </summary>
         /// <param name="localaddr"></param>

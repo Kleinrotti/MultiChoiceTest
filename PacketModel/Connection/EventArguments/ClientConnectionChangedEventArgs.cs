@@ -29,7 +29,7 @@ namespace PacketModel.Connection.EventArguments
             IsConnected = client.Connected;
             ReceivedBufferSize = client.ReceiveBufferSize;
             Client = client;
-            IP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+            //IP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
         }
 
         /// <summary>

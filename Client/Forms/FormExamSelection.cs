@@ -31,12 +31,7 @@ namespace Client.Forms
 
             _ip = IPAddress.Parse("127.0.0.1");
 
-            _client = new TCPClient();
-            _client.Connection += OnConnectionChanged;
-            _client.PacketReceived += OnPacketReceived;
-            _client.Connect(_ip, _port);
-
-            this.txtUsername.Focus();
+            
         }
 
         /// <summary>
@@ -46,6 +41,12 @@ namespace Client.Forms
         /// <param name="e"></param>
         private void FormExamSelection_Load(object sender, EventArgs e)
         {
+            _client = new TCPClient();
+            _client.Connection += OnConnectionChanged;
+            _client.PacketReceived += OnPacketReceived;
+            _client.Connect(_ip, _port);
+
+            this.txtUsername.Focus();
             var v = new DefaultMessage(HandlerOperator.Server, Command.SendExamList);
             _client.SendPacket(v);
         }
@@ -165,8 +166,6 @@ namespace Client.Forms
         {
             FormChangeIP changeIP = new FormChangeIP();
             changeIP.ShowDialog();
-
-            //changeIP.changedIP
         }
     }
 }
