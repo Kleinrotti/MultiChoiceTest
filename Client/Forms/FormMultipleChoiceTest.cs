@@ -181,14 +181,12 @@ namespace Client.Forms
 
             if(result == DialogResult.OK)
             {
-                DefaultAnswer answer = new DefaultAnswer(HandlerOperator.Server);
+                DefaultAnswer answer;
                 List<DefaultAnswer> answers = new List<DefaultAnswer>();
 
 
                 foreach(TabPage exercise in tabControlExam.TabPages) 
-                {
-                    answer.ID = Convert.ToInt32(exercise.Name);
-
+                {                    
                     foreach(Control c in exercise.Controls)
                     {
                         if(c.GetType().Name == "GroupBox")
@@ -196,11 +194,18 @@ namespace Client.Forms
                             foreach(RadioButton r in c.Controls)
                             {
                                 if(r.Checked == true)
-                                    answer.ResultIndex = Convert.ToInt32(r.Name);
+                                {
+                                    answer = new DefaultAnswer(HandlerOperator.Server) {
+                                        ID = Convert.ToInt32(exercise.Name) - 1,
+                                        ResultIndex = Convert.ToInt32(r.Name)
+                                    };
+                                    MessageBox.Show("ID: " + answer.ID.ToString() + "\nResultIndex: " + r.Name.ToString());
+
+                                    answers.Add(answer);
+                                }
                             }
                         }
                     }
-                    answers.Add(answer);
                 }
                 _client.SendPacket(answers);
             }
