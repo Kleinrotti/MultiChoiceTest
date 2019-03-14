@@ -40,11 +40,21 @@ namespace Server.File
             }
         }
 
+        /// <summary>
+        /// Get Exam Names as <see cref="String"/> List.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         protected List<string> GetExamNames(string path)
         {
             return System.IO.Directory.GetFiles(path).Select(System.IO.Path.GetFileNameWithoutExtension).ToList<string>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="content"></param>
         protected void WriteLineToFile(string path, string content)
         {
             int count = 0;
@@ -63,6 +73,11 @@ namespace Server.File
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         protected bool IsFileReady(string path)
         {
             try
@@ -76,6 +91,11 @@ namespace Server.File
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="list"></param>
         protected void WriteListToFile(string path, List<string> list)
         {
             using (FileStream fs = System.IO.File.Open(path, FileMode.Append, FileAccess.Write))
@@ -90,6 +110,11 @@ namespace Server.File
             }
         }
 
+        /// <summary>
+        /// Check if File Exists.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns><see cref="bool"/></returns>
         protected bool FileExists(string path)
         {
             return System.IO.File.Exists(path);

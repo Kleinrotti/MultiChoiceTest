@@ -23,6 +23,10 @@ namespace Server.File
             _path = path;
         }
 
+        /// <summary>
+        /// Get Exam Names as <see cref="string"/> list.
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetExamNames()
         {
             var v = GetExamNames(_path);
@@ -30,6 +34,11 @@ namespace Server.File
             return v;
         }
 
+        /// <summary>
+        /// Get Exercises as <see cref="DefaultExercise"/> List.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public List<DefaultExercise> GetExercises(string filename)
         {
             ReadLinesFromFile(System.IO.Path.Combine(_path, filename + ".csv"));
@@ -41,6 +50,11 @@ namespace Server.File
             return v;
         }
 
+        /// <summary>
+        /// Get Exercise as <see cref="DefaultExercise"/>.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         private DefaultExercise GetExercise(string line)
         {
             var v = new DefaultExercise(HandlerOperator.Client);

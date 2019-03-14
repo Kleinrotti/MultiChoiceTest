@@ -13,6 +13,10 @@ namespace PacketModel.Models
         public List<string> Answers { get; set; } = new List<string>();
         public HandlerOperator Operator { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultExercise"/> class.
+        /// </summary>
+        /// <param name="op"></param>
         public DefaultExercise(HandlerOperator op)
         {
             Operator = op;

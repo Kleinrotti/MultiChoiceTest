@@ -13,6 +13,10 @@ namespace PacketModel.Models
         public int ResultIndex { get; set; }
         public HandlerOperator Operator { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultAnswer"/> class.
+        /// </summary>
+        /// <param name="op"></param>
         public DefaultAnswer(HandlerOperator op)
         {
             Operator = op;

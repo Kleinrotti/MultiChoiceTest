@@ -102,24 +102,7 @@ namespace Client.Forms
             //Add the generated TabPage to the TabControl
             tabControlExam.TabPages.Add(newTabPage);
 
-            //Create a new Button
-            //var newButton = new Button() {
-            //    Text = "NewButton",
-            //    Location = new Point(20, 20)
-            //};
-
-            //Assign dynamic handler for the Button's click event
-            //newButton.Click += new EventHandler(button_click);
-
-            //Add the Button to the tab page
-            //newTabPage.Controls.Add(newButton);
         }
-
-        //public void button_click(object sender, EventArgs e)
-        //{
-        //    Button buttonClicked = (Button)sender;
-        //    MessageBox.Show(String.Format("Button with text: {0} clicked!", buttonClicked.Text));
-        //}
 
         /// <summary>
         /// Packet Received Event

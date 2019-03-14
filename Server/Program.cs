@@ -14,6 +14,9 @@ namespace Server
 {
     internal class Program
     {
+        private static IPAddress _ip = IPAddress.Parse("127.0.0.1");
+        private static int _port = 15000;
+
         private static TCPServer _server;
         private static ExecuteSend del;
         private static CsvImport _csv;
@@ -22,9 +25,13 @@ namespace Server
 
         public delegate void ExecuteSend(TcpClient client, string filename);
 
+        /// <summary>
+        /// Server Main method
+        /// </summary>
+        /// <param name="args"></param>
         private static void Main(string[] args)
         {
-            _server = new TCPServer(IPAddress.Parse("127.0.0.1"), 15000);
+            _server = new TCPServer(_ip, _port);
             _server.ClientConnectionChanged += OnConnectionChanged;
             _server.PacketReceived += OnPacketReceived;
             _server.Start();
@@ -33,12 +40,22 @@ namespace Server
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// If connection state has changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void OnConnectionChanged(object sender, ClientConnectionChangedEventArgs e)
         {
             PacketHandler h = new PacketHandler();
             _log.AppendToLog(h.ProcessConnectionState(e), LogType.Connection);
         }
 
+        /// <summary>
+        /// Send exam list to client.
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="filename"></param>
         private static void SendExamListToClient(TcpClient client, string filename)
         {
             _log.AppendToLog("Sending exam list to client: " +
@@ -48,6 +65,11 @@ namespace Server
             _server.SendPacket(client, new AvailibleExams(HandlerOperator.Client, list));
         }
 
+        /// <summary>
+        /// Send exercises to client, depending on selected exam.
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="filename"></param>
         private static void SendExercisesToClient(TcpClient client, string filename)
         {
             _log.AppendToLog("Sending exercises to client: " +
@@ -57,6 +79,11 @@ namespace Server
             _server.SendPacket(client, ex);
         }
 
+        /// <summary>
+        /// If server received packets.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void OnPacketReceived(object sender, PacketReceivedEventArgs e)
         {
             PacketHandler h = new PacketHandler();

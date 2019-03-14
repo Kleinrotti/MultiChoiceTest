@@ -11,11 +11,19 @@ namespace PacketModel.Connection.EventArguments
         public string IP { get; set; }
         public TcpClient Client { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientConnectionChangedEventArgs"/> class.
+        /// </summary>
+        /// <param name="connnected"></param>
         public ClientConnectionChangedEventArgs(bool connnected)
         {
             IsConnected = connnected;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientConnectionChangedEventArgs"/> class.
+        /// </summary>
+        /// <param name="client"></param>
         public ClientConnectionChangedEventArgs(TcpClient client)
         {
             IsConnected = client.Connected;
@@ -24,6 +32,11 @@ namespace PacketModel.Connection.EventArguments
             IP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientConnectionChangedEventArgs"/> class.
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="connected"></param>
         public ClientConnectionChangedEventArgs(IPAddress address, bool connected)
         {
             IsConnected = connected;

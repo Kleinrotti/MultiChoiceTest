@@ -10,6 +10,12 @@ namespace PacketModel.Connection.EventArguments
 
         public TcpClient Sender { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PacketReceivedEventArgs"/> class.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="buffer"></param>
+        /// <param name="length"></param>
         public PacketReceivedEventArgs(TcpClient sender, byte[] buffer, int length)
         {
             this.Sender = sender;

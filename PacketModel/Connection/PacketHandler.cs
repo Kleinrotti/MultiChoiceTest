@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace PacketModel.Connection
 {
     /// <summary>
-    /// Packet handling for received object
+    /// Packet handling for received object.
     /// </summary>
     public class PacketHandler
     {
@@ -79,6 +79,11 @@ namespace PacketModel.Connection
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
         private bool IsList(object o)
         {
             if (o == null) return false;
@@ -87,6 +92,11 @@ namespace PacketModel.Connection
                    o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
         public string ProcessConnectionState(ClientConnectionChangedEventArgs e)
         {
             string info;
@@ -97,6 +107,10 @@ namespace PacketModel.Connection
             return info;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private bool IsEmpty()
         {
             return false;

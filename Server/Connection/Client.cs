@@ -6,6 +6,11 @@ namespace Server.Connection
 {
     internal class Client
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Client"/> class.
+        /// </summary>
+        /// <param name="tcpClient"></param>
+        /// <param name="buffer"></param>
         public Client(TcpClient tcpClient, byte[] buffer)
         {
             if (tcpClient == null) throw new ArgumentNullException("tcpClient");
@@ -21,6 +26,9 @@ namespace Server.Connection
         public NetworkStream Networkstream { get { return Tcpclient.GetStream(); } }
         public IPAddress Ip { get => ((IPEndPoint)Tcpclient.Client.RemoteEndPoint).Address; }
 
+        /// <summary>
+        /// Clear Client Buffer.
+        /// </summary>
         public void ClearBuffer()
         {
             Buffer = new byte[Tcpclient.ReceiveBufferSize];

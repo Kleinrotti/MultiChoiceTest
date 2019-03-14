@@ -26,11 +26,18 @@ namespace Server.Logging
             base.AppendToLog(ParseClient(), LogType.Exam);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private string ParseClient()
         {
             return _client.Ip.ToString() + ";" + _questionId + ";" + _answer;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Dispose()
         {
             _path = null;
