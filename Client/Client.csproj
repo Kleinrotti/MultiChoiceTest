@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,12 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connection\TCPClient.cs" />
-    <Compile Include="Forms\FormChangeIP.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormChangeIP.Designer.cs">
-      <DependentUpon>FormChangeIP.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormExamSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,11 +62,9 @@
     </Compile>
     <Compile Include="Handler\PacketHandler.cs" />
     <Compile Include="Helpers\ControlFillHelper.cs" />
+    <Compile Include="Helpers\IpInputHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\FormChangeIP.resx">
-      <DependentUpon>FormChangeIP.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormExamSelection.resx">
       <DependentUpon>FormExamSelection.cs</DependentUpon>
     </EmbeddedResource>

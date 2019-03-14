@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using Client.Helpers;
 
 namespace Client.Forms
 {
@@ -27,8 +28,6 @@ namespace Client.Forms
             InitializeComponent();
 
             btnStartTest.BackColor = Color.FromArgb(158, 158, 158);
-
-            _ip = IPAddress.Parse("127.0.0.1");
         }
 
         private void FormExamSelection_Load(object sender, EventArgs e)
@@ -36,12 +35,26 @@ namespace Client.Forms
             _client = new TCPClient();
             _client.Connection += OnConnectionChanged;
             _client.PacketReceived += OnPacketReceived;
-            _client.Connect(_ip, _port);
-            if (!GetExamList())
-            {
-                MessageBox.Show("Connection to server failed");
-            }
+            ConnectToServer();
             this.txtUsername.Focus();
+        }
+
+        private void ConnectToServer()
+        {
+            var ip = IpInputHelper.IpDialog();
+            if (ip != string.Empty)
+            {
+                _ip = IPAddress.Parse(ip);
+                _client.Connect(_ip, _port);
+                if (!GetExamList())
+                {
+                    MessageBox.Show("Connection to server failed");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid ip address");
+            }
         }
 
         private bool GetExamList()
@@ -179,8 +192,7 @@ namespace Client.Forms
         /// <param name="e"></param>
         private void changeServerIPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormChangeIP changeIP = new FormChangeIP();
-            changeIP.ShowDialog();
+            ConnectToServer();
         }
     }
 }
