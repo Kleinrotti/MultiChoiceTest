@@ -15,14 +15,14 @@ namespace Server.Helper
         public static string ProcessResult(List<DefaultAnswer> answers, List<DefaultExercise> exercises)
         {
             int correct = 0;
-            int amount = 0;
+            int amount = exercises.Count;
+            
             foreach(var v in answers)
             {
                 foreach(var e in exercises)
                 {
                     if (e.ID == v.ID)
                     {
-                        amount++;
                         if(v.ResultIndex == e.ResultIndex)
                         {
                             correct++;

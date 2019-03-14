@@ -101,7 +101,7 @@ namespace Server
                 MessageString = result
             };
             _log.AppendToLog(result, LogType.Exam);
-            _server.SendPacket(msg);
+            _server.SendPacket(client,msg);
         }
         
         /// <summary>

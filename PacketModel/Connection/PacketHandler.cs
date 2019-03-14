@@ -39,6 +39,7 @@ namespace PacketModel.Connection
                     {
                         var v = _packet as List<DefaultAnswer>;
                         del[2].DynamicInvoke(e.Sender, v);
+                        return;
                     }
                 }
                 //Packet needs to be handled by client
@@ -50,6 +51,11 @@ namespace PacketModel.Connection
                         var v = _packet as AvailibleExams;
                         Console.WriteLine("Client received exam names " + v.ExamNames[0]);
                         del[0].DynamicInvoke(v.ExamNames);
+                    }
+                    else if(type == typeof(DefaultMessage))
+                    {
+                        var v = _packet as DefaultMessage;
+                        Console.WriteLine(v.MessageString);
                     }
                 }
                 else
@@ -65,9 +71,6 @@ namespace PacketModel.Connection
 
                             case Command.SendExercises:
                                 del[1].DynamicInvoke(e.Sender, obj.MessageString);
-                                break;
-
-                            case Command.SendUserAnswers:
                                 break;
 
                             default:
