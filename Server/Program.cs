@@ -31,6 +31,9 @@ namespace Server
         /// <param name="args"></param>
         private static void Main(string[] args)
         {
+            Console.WindowHeight = 22;
+            Console.WindowWidth = 100;
+
             _server = new TCPServer(_ip, _port);
             _server.ClientConnectionChanged += OnConnectionChanged;
             _server.PacketReceived += OnPacketReceived;

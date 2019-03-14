@@ -47,11 +47,19 @@ namespace Client.Forms
         /// <param name="answers"></param>
         private void CreateTabForExercise(Int32 id, String question, List<String> answers)
         {
+            string tabPageText = "";
+
+            if(id < 10)
+                tabPageText = "#0" + id.ToString();
+            else
+                tabPageText = "#" + id.ToString();
+
             // Create a new TabPage
             var newTabPage = new TabPage()
             {
-                Text = id.ToString(),
-                BackColor = Color.White
+                Text = tabPageText,
+                BackColor = Color.White,
+                Name = id.ToString()
             };
 
             // Create a new Label for displaing the question.

@@ -13,11 +13,12 @@ namespace Client.Forms
 {
     public partial class FormExamSelection : Form
     {
-        public bool testStarted = false;
         private static IPAddress _ip = IPAddress.Parse("127.0.0.1");
         private static int _port = 15000;
-        private TCPClient _client;
+
+        public bool testStarted = false;
         private bool _isconnected = false;
+        private TCPClient _client;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormExamSelection"/> class.
@@ -32,8 +33,23 @@ namespace Client.Forms
             _client.Connect(_ip, _port);
         }
 
+        /// <summary>
+        /// Form Load
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FormExamSelection_Load(object sender, EventArgs e)
+        {
+            var v = new DefaultMessage(HandlerOperator.Server, Command.SendExamList);
+            _client.SendPacket(v);
+        }
+
         public delegate void ExecuteTask(object o);
 
+        /// <summary>
+        /// Fill combobox with available exams.
+        /// </summary>
+        /// <param name="examnames"></param>
         private void FillComboBox(object examnames)
         {
             var ad = examnames as List<string>;
@@ -44,10 +60,14 @@ namespace Client.Forms
                     comboExamSelection.Items.Add(v);
                 }
 
-                comboExamSelection.SelectedIndex = 0;
+                comboExamSelection.SelectedIndex = -1;
             }));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="exercises"></param>
         private void GetExercises(object exercises)
         {
             var ex = exercises as List<DefaultExercise>;
@@ -63,17 +83,21 @@ namespace Client.Forms
             }
         }
 
-        private void FormExamSelection_Load(object sender, EventArgs e)
-        {
-            var v = new DefaultMessage(HandlerOperator.Server, Command.SendExamList);
-            _client.SendPacket(v);
-        }
-
+        /// <summary>
+        /// On Connection Changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnConnectionChanged(object sender, ClientConnectionChangedEventArgs e)
         {
             _isconnected = e.IsConnected;
         }
 
+        /// <summary>
+        /// On Packet Received.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnPacketReceived(object sender, PacketReceivedEventArgs e)
         {
             PacketHandler h = new PacketHandler();

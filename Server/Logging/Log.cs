@@ -27,9 +27,11 @@ namespace Server.Logging
         /// <param name="type"></param>
         public virtual void AppendToLog(string text, LogType type)
         {
-            string content = type.ToString() + ";" + DateTime.Now + ";" + text;
+            var timestamp = DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss");
+
+            string content = type.ToString() + ";" + timestamp + ";" + text;
             if (ConsoleOutput)
-                Console.WriteLine(type.ToString() + ": " + text + " at " + DateTime.Now.ToString("HH:mm"));
+                Console.WriteLine(type.ToString() + ": " + text + " at " + timestamp);
             WriteLineToFile(_path, content);
         }
 
