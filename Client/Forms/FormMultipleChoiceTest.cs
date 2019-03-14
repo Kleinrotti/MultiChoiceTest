@@ -202,6 +202,7 @@ namespace Client.Forms
                     }
                     answers.Add(answer);
                 }
+                _client.SendPacket(answers);
             }
         }
     }
