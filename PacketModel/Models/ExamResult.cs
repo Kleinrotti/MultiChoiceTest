@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PacketModel.Models
 {
     [Serializable]
-    class ExamResult
+    public class ExamResult
     {
         public int[] CorrectAnwerIds { get; set; }
         public int[] SkippedAnswerIds { get; set; }

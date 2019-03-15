@@ -34,14 +34,15 @@ namespace Client.Handler
                     var v = _packet as AvailibleExams;
                     del[0].DynamicInvoke(v.ExamNames);
                 }
+                else if(type == typeof(ExamResult))
+                {
+                    del[0].DynamicInvoke(_packet);
+                }
                 else if (type == typeof(DefaultMessage))
                 {
                     var v = _packet as DefaultMessage;
                     switch (v.ExecuteCommand)
                     {
-                        case Command.SendUserAnswers:
-                            del[0].DynamicInvoke(v.MessageString);
-                            break;
 
                         case Command.Undefined:
                             Console.WriteLine(v.MessageString);
