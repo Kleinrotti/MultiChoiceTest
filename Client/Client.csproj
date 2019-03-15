@@ -61,7 +61,6 @@
       <DependentUpon>FormMultipleChoiceTest.cs</DependentUpon>
     </Compile>
     <Compile Include="Handler\PacketHandler.cs" />
-    <Compile Include="Helpers\ControlFillHelper.cs" />
     <Compile Include="Helpers\IpInputHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

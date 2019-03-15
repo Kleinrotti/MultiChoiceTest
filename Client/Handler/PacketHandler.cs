@@ -12,7 +12,7 @@ namespace Client.Handler
         private object _packet;
 
         /// <summary>
-        /// Decide how packets will be processed by client
+        /// Decide how packets will be processed by the client.
         /// </summary>
         public void ProcessPacket(PacketReceivedEventArgs e, Delegate response)
         {
@@ -56,7 +56,7 @@ namespace Client.Handler
         }
 
         /// <summary>
-        ///
+        /// Return <see cref="object"/> parameter as <seealso cref="List{T}"/>.
         /// </summary>
         /// <param name="o"></param>
         /// <returns></returns>

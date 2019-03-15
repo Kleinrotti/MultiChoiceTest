@@ -11,15 +11,29 @@ namespace Client.Forms
 {
     public partial class FormMultipleChoiceTest : Form
     {
+        #region Variables
         private TCPClient _client;
 
         private bool _connected = false;
         private List<DefaultExercise> _exercises;
         private ExecuteTask _del;
 
-        public event EventHandler NewTest;
+        #endregion
+
+
+        #region Delegates
 
         private delegate void ExecuteTask(object obj);
+
+        #endregion
+
+
+        #region Events
+
+        public event EventHandler NewTest;
+        
+        #endregion
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormMultipleChoiceTest"/> class.
@@ -34,6 +48,11 @@ namespace Client.Forms
             _exercises = exercises;
         }
 
+        /// <summary>
+        /// Form load Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FormMultipleChoiceTest_Load(object sender, EventArgs e)
         {
             // Display Exercises
@@ -41,60 +60,6 @@ namespace Client.Forms
             {
                 this.CreateTabForExercise(i + 1, _exercises[i].Question, _exercises[i].Answers);
             }
-        }
-
-        #region Event Raiser
-
-        private void OnNewTest(object sender, EventArgs e)
-        {
-            NewTest?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// Packet Received Event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnPacketReceived(object sender, PacketReceivedEventArgs e)
-        {
-            Console.WriteLine("bruh");
-            PacketHandler h = new PacketHandler();
-            _del = new ExecuteTask(ShowExamResult);
-            h.ProcessPacket(e, _del);
-        }
-
-        /// <summary>
-        /// Connection state has changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnConnectionChanged(object sender, ClientConnectionChangedEventArgs e)
-        {
-            if (_connected == true && e.IsConnected == false)
-            {
-                MessageBox.Show("Connection lost");
-                Invoke(new Action(() =>
-                {
-                    tabControlExam.Enabled = false;
-                    btnSendResults.Enabled = false;
-                    button_selectnewtest.Visible = false;
-                }));
-            }
-            _connected = e.IsConnected;
-        }
-
-        #endregion Event Raiser
-
-        private void ShowExamResult(object obj)
-        {
-            MessageBox.Show((string)obj);
-            Invoke(new Action((() =>
-            {
-                button_selectnewtest.Visible = true;
-                tabControlExam.Enabled = false;
-                btnCancel.Visible = false;
-                btnSendResults.Visible = false;
-            })));
         }
 
         /// <summary>
@@ -107,22 +72,20 @@ namespace Client.Forms
         {
             string tabPageText = "";
 
-            if (id < 10)
+            if(id < 10)
                 tabPageText = "#0" + id.ToString();
             else
                 tabPageText = "#" + id.ToString();
 
             // Create a new TabPage
-            var newTabPage = new TabPage()
-            {
+            var newTabPage = new TabPage() {
                 Text = tabPageText,
                 BackColor = Color.White,
                 Name = id.ToString()
             };
 
             // Create a new Label for displaing the question.
-            var newLabel = new Label()
-            {
+            var newLabel = new Label() {
                 Text = question,
                 Location = new Point(17, 18),
                 Font = new Font("Arial", 14.25f, FontStyle.Bold)
@@ -131,8 +94,7 @@ namespace Client.Forms
             newLabel.AutoSize = true;
 
             // Create a new GroupBox
-            var newGroupBox = new GroupBox()
-            {
+            var newGroupBox = new GroupBox() {
                 Text = "Antwortmöglichkeiten",
                 Location = new Point(20, 109),
                 Size = new Size(820, 225),
@@ -142,11 +104,10 @@ namespace Client.Forms
             // Create RadioButtons for the answers
             int yLocation = 40;
             int xLocation = 30;
-            for (int i = 0; i < answers.Count; i++)
+            for(int i = 0; i < answers.Count; i++)
             {
                 //Console.WriteLine(answers[i]);
-                var newAnswers = new RadioButton()
-                {
+                var newAnswers = new RadioButton() {
                     Text = answers[i],
                     Name = i.ToString(),
                     Font = new Font("Arial", 12f, FontStyle.Regular),
@@ -176,6 +137,72 @@ namespace Client.Forms
             //Add the generated TabPage to the TabControl
             tabControlExam.TabPages.Add(newTabPage);
         }
+
+        #region Event Raiser
+
+        // <summary>
+        /// Connection state has changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnConnectionChanged(object sender, ClientConnectionChangedEventArgs e)
+        {
+            if(_connected == true && e.IsConnected == false)
+            {
+                MessageBox.Show("Connection lost");
+                Invoke(new Action(() => {
+                    tabControlExam.Enabled = false;
+                    btnSendResults.Enabled = false;
+                    button_selectnewtest.Visible = false;
+                }));
+            }
+            _connected = e.IsConnected;
+        }
+
+        /// <summary>
+        /// Packet Received Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnPacketReceived(object sender, PacketReceivedEventArgs e)
+        {
+            Console.WriteLine("bruh");
+            PacketHandler h = new PacketHandler();
+            _del = new ExecuteTask(ShowExamResult);
+            h.ProcessPacket(e, _del);
+        }
+
+        /// <summary>
+        /// On New Test
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnNewTest(object sender, EventArgs e)
+        {
+            NewTest?.Invoke(this, e);
+        }
+
+        #endregion
+
+        #region Server Responses
+
+        /// <summary>
+        /// Show exam result.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void ShowExamResult(object obj)
+        {
+            MessageBox.Show((string)obj);
+            Invoke(new Action((() =>
+            {
+                button_selectnewtest.Visible = true;
+                tabControlExam.Enabled = false;
+                btnCancel.Visible = false;
+                btnSendResults.Visible = false;
+            })));
+        }
+
+        #endregion
 
         /// <summary>
         /// Button Send Result
@@ -216,11 +243,21 @@ namespace Client.Forms
             }
         }
 
+        /// <summary>
+        /// Form closed Event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FormMultipleChoiceTest_FormClosed(object sender, FormClosedEventArgs e)
         {
             Environment.Exit(0);
         }
 
+        /// <summary>
+        /// Select new Test after one has been completed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button_selectnewtest_Click(object sender, EventArgs e)
         {
             _client.Connection -= OnConnectionChanged;

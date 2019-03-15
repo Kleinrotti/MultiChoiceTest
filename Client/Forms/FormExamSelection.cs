@@ -15,100 +15,34 @@ namespace Client.Forms
 {
     public partial class FormExamSelection : Form
     {
+        #region Variables
+
         private IPAddress _ip;
         private static int _port = 15000;
 
+        private bool firstRun = true;
         private bool _testStarted = false;
         private bool _isconnected = false;
         private TCPClient _client;
         private FormMultipleChoiceTest _formchoicetest;
 
-        public FormExamSelection()
-        {
-            InitializeComponent();
+        #endregion
 
-            btnStartTest.BackColor = Color.FromArgb(158, 158, 158);
-        }
 
-        private void FormExamSelection_Load(object sender, EventArgs e)
-        {
-            _client = new TCPClient();
-            _client.Connection += OnConnectionChanged;
-            _client.PacketReceived += OnPacketReceived;
-            ConnectToServer();
-            this.txtUsername.Focus();
-        }
-
-        private void ConnectToServer()
-        {
-            var ip = IpInputHelper.IpDialog();
-            if (ip != string.Empty)
-            {
-                _ip = IPAddress.Parse(ip);
-                _client.Connect(_ip, _port);
-                if (!GetExamList())
-                {
-                    MessageBox.Show("Connection to server failed");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please enter a valid ip address");
-            }
-        }
-
-        private bool GetExamList()
-        {
-            var v = new DefaultMessage(Command.SendExamList);
-            //wait three connection attempts
-            for (int i = 0; i < 3; i++)
-            {
-                if (_client.SendPacket(v))
-                    return true;
-                i++;
-                Thread.Sleep(200);
-            }
-            return false;
-        }
+        #region Delegates
 
         public delegate void ExecuteTask(object o);
 
+        #endregion
+
+
+        #region Event Raiser
+
         /// <summary>
-        /// Fill combobox with available exams.
+        /// On New Test
         /// </summary>
-        /// <param name="examnames"></param>
-        private void FillComboBox(object examnames)
-        {
-            var ad = examnames as List<string>;
-            Invoke(new Action(() =>
-            {
-                comboExamSelection.Items.Clear();
-                foreach (var v in ad)
-                {
-                    comboExamSelection.Items.Add(v);
-                }
-
-                comboExamSelection.SelectedIndex = -1;
-            }));
-        }
-
-        private void GetExercises(object exercises)
-        {
-            var ex = exercises as List<DefaultExercise>;
-            if (ex != null)
-            {
-                _client.Connection -= OnConnectionChanged;
-                _client.PacketReceived -= OnPacketReceived;
-                Invoke(new Action(() =>
-                {
-                    Hide();
-                    _formchoicetest = new FormMultipleChoiceTest(_client, ex);
-                    _formchoicetest.NewTest += OnNewTest;
-                    _formchoicetest.Show();
-                }));
-            }
-        }
-
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnNewTest(object sender, EventArgs e)
         {
             _formchoicetest.Dispose();
@@ -139,6 +73,122 @@ namespace Client.Forms
             ExecuteTask del = new ExecuteTask(FillComboBox);
             del += GetExercises;
             h.ProcessPacket(e, del);
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FormExamSelection"/> class.
+        /// </summary>
+        public FormExamSelection()
+        {
+            InitializeComponent();
+
+            btnStartTest.BackColor = Color.FromArgb(158, 158, 158);
+        }
+
+        /// <summary>
+        /// Form load Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FormExamSelection_Load(object sender, EventArgs e)
+        {
+            _client = new TCPClient();
+            _client.Connection += OnConnectionChanged;
+            _client.PacketReceived += OnPacketReceived;
+            ConnectToServer();
+            this.txtUsername.Focus();
+        }
+
+        /// <summary>
+        /// Connect to Server, based on the ip
+        /// </summary>
+        private void ConnectToServer()
+        {
+            String ip = "127.0.0.1";
+            // Check for first run
+            // Set default IP if you don't change it
+            if(firstRun)
+                firstRun = false;
+            else
+                ip = IpInputHelper.IpDialog();
+
+            if (ip != string.Empty)
+            {
+                _ip = IPAddress.Parse(ip);
+                _client.Connect(_ip, _port);
+                if (!GetExamList())
+                {
+                    MessageBox.Show("Connection to server failed.", "Warning", MessageBoxButtons.OK);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid ip address.", "Warning", MessageBoxButtons.OK);
+            }
+        }
+
+        #region Server Responses
+
+        /// <summary>
+        /// Get Exam List from Server.
+        /// </summary>
+        /// <returns></returns>
+        private bool GetExamList()
+        {
+            var v = new DefaultMessage(Command.SendExamList);
+            //wait three connection attempts
+            for (int i = 0; i < 3; i++)
+            {
+                if (_client.SendPacket(v))
+                    return true;
+                i++;
+                Thread.Sleep(200);
+            }
+            return false;
+        }
+        
+        /// <summary>
+        /// Get Exercises from Server
+        /// </summary>
+        /// <param name="exercises"></param>
+        private void GetExercises(object exercises)
+        {
+            var ex = exercises as List<DefaultExercise>;
+            if (ex != null)
+            {
+                _client.Connection -= OnConnectionChanged;
+                _client.PacketReceived -= OnPacketReceived;
+                Invoke(new Action(() =>
+                {
+                    Hide();
+                    _formchoicetest = new FormMultipleChoiceTest(_client, ex);
+                    _formchoicetest.NewTest += OnNewTest;
+                    _formchoicetest.Show();
+                }));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Fill combobox with available exams.
+        /// </summary>
+        /// <param name="examnames"></param>
+        private void FillComboBox(object examNames)
+        {
+            var ad = examNames as List<string>;
+            Invoke(new Action(() => {
+                comboExamSelection.Items.Clear();
+                foreach(var v in ad)
+                {
+                    comboExamSelection.Items.Add(v);
+                }
+
+                comboExamSelection.SelectedIndex = -1;
+            }));
         }
 
         /// <summary>
@@ -192,7 +242,7 @@ namespace Client.Forms
         /// <param name="e"></param>
         private void changeServerIPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConnectToServer();
+            this.ConnectToServer();
         }
     }
 }
