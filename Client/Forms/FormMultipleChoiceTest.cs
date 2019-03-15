@@ -123,11 +123,11 @@ namespace Client.Forms
                 newGroupBox.Controls.Add(newAnswers);
 
                 // Check for second column
-                //if (i != 0 && i % 3 == 0)
-                //{
-                //    yLocation = 40;
-                //    xLocation = 410;
-                //}
+                if(i != 0 && i % 3 == 0)
+                {
+                    yLocation = 40;
+                    xLocation = 410;
+                }
             }
 
             // Add Controls to the new TabPages
