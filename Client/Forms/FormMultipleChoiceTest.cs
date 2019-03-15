@@ -192,7 +192,21 @@ namespace Client.Forms
         /// <param name="obj"></param>
         private void ShowExamResult(object obj)
         {
-            MessageBox.Show((string)obj);
+            var results = (ExamResult)obj;
+
+            int exerciseCount = results.CorrectAnswerIds.Length + results.WrongAnswerIds.Length + results.SkippedAnswerIds.Length;
+
+            String output = string.Format(
+                "Sie haben {0} von {1} richtig beantwortet.\n" +
+                "{2} Fragen wurden falsch beantwortet.\n" +
+                "{3} Fragen wurden übersprungen.\n",
+                results.CorrectAnswerIds.Length, exerciseCount,
+                results.WrongAnswerIds.Length,
+                results.SkippedAnswerIds.Length
+            );
+
+            MessageBox.Show(output, "Test Ergebnis", MessageBoxButtons.OK);
+
             Invoke(new Action((() =>
             {
                 button_selectnewtest.Visible = true;
