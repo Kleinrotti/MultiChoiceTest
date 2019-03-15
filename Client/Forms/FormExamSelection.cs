@@ -107,13 +107,7 @@ namespace Client.Forms
         /// </summary>
         private void ConnectToServer()
         {
-            String ip = "127.0.0.1";
-            // Check for first run
-            // Set default IP if you don't change it
-            if(firstRun)
-                firstRun = false;
-            else
-                ip = IpInputHelper.IpDialog();
+            String ip = IpInputHelper.IpDialog();
 
             if (ip != string.Empty)
             {
