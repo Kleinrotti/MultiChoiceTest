@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace PacketModel.Models
 {
     [Serializable]
-    public class AvailibleExams : IPacket
+    public class AvailibleExams
     {
         public List<string> ExamNames { get; set; }
 

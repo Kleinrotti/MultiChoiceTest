@@ -50,6 +50,7 @@
     <Compile Include="Models\DefaultAnswer.cs" />
     <Compile Include="Models\DefaultMessage.cs" />
     <Compile Include="Models\DefaultExercise.cs" />
+    <Compile Include="Models\ExamResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Translator\PacketSerializer.cs" />
   </ItemGroup>

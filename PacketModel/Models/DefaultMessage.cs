@@ -4,7 +4,7 @@ using System;
 namespace PacketModel.Models
 {
     [Serializable]
-    public class DefaultMessage : IPacket
+    public class DefaultMessage
     {
         public string MessageString { get; set; }
         public Command ExecuteCommand { get; set; }

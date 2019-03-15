@@ -6,7 +6,7 @@ namespace PacketModel.Models
     ///
     /// </summary>
     [Serializable]
-    public class DefaultAnswer : IPacket
+    public class DefaultAnswer
     {
         public int ID { get; set; }
         public int ResultIndex { get; set; }
