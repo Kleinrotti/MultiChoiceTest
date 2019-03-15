@@ -116,16 +116,12 @@ namespace Server
             var list = _csv.GetExercises(filename);
             var erh = new ExerciseResultHelper();
             var result = erh.ProcessResult((List<DefaultAnswer>)data, list);
-            var msg = new DefaultMessage(Command.SendUserAnswers)
-            {
-                MessageString = result
-            };
             var examlog = new ExamLog
             {
                 ConsoleOutput = true
             };
             examlog.AppendToLog(_server.GetIpFromClient(client), erh.ExistingAnswers, erh.CorrectAnswers);
-            _server.SendPacket(client, msg);
+            _server.SendPacket(client, result);
         }
 
         /// <summary>
